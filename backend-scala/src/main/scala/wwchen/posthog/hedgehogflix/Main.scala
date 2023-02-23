@@ -1,53 +1,57 @@
 package wwchen.posthog.hedgehogflix
 
 import cats.effect._
-import cats.syntax.all._
+import cats.effect.unsafe.implicits.global
+import io.circe.generic.auto._
 import com.comcast.ip4s.IpLiteralSyntax
-import org.http4s.client.middleware.{FollowRedirect, Logger => ClientLogger}
-import org.http4s.ember.client.EmberClientBuilder
+import com.typesafe.scalalogging.Logger
+import org.http4s.server.middleware.{Logger => ServerLogger}
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.middleware.{Logger => ServerLogger}
-import wwchen.posthog.hedgehogflix.clients.JokeClient
-import wwchen.posthog.hedgehogflix.services.JokeService
+import wwchen.posthog.hedgehogflix.db.FlixEventFileDb
+import wwchen.posthog.hedgehogflix.services.{BaseService, FlixAnalytics}
 
 object Main extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
-    for {
-      // http client to be used throughout the app
-      baseHttpClient <- EmberClientBuilder.default[IO].build
-      httpClient = ClientLogger(
-        logHeaders = Config.HttpClient.LogHeaders,
-        logBody = Config.HttpClient.LogBody
-      )(FollowRedirect[IO](
-          maxRedirects = Config.HttpClient.MaxRedirects
-        )(baseHttpClient)
-      )
+    val defaultOption = "server"
+    args.headOption.getOrElse(defaultOption) match {
+      case "server" => runServer()
+      case "stream" => runStream()
+    }
+  }
 
-      // lightweight "dependency injection"
-      jokeClient = new JokeClient(httpClient)
+  def runServer() = {
+    val db = new FlixEventFileDb()
+    val api = new FlixAnalytics(db)
 
-      // "app" instantiation
-      jokeService = new JokeService(jokeClient)
+    val service = new BaseService(db, api)
 
-      // root route router
-      routes = Router(
-        Config.Services.Joke.RootPath -> jokeService.routes,
-      ).orNotFound
-
-      // middleware
-      loggedApp = ServerLogger.httpApp(
+    val httpApp = ServerLogger.httpApp(
         logHeaders = Config.HttpServer.LogHeaders,
         logBody = Config.HttpServer.LogBody
-      )(routes)
+      )(Router("/" -> service.routes).orNotFound)
 
-      exitCode <- EmberServerBuilder
-        .default[IO]
-        .withHost(ipv4"0.0.0.0")
-        .withPort(port"8080")
-        .withHttpApp(loggedApp)
-        .build
-        .as(ExitCode.Success)
-    } yield exitCode
-  }.use(_ => IO.never)
+    EmberServerBuilder
+      .default[IO]
+      .withHost(ipv4"0.0.0.0")
+      .withPort(port"8080")
+      .withHttpApp(httpApp)
+      .build
+      .use(_ => IO.never)
+      .as(ExitCode.Success)
+  }
+
+  def runStream() = {
+    val db = new FlixEventFileDb()
+    val api = new FlixAnalytics(db)
+    val logger = Logger("run")
+
+    val run = for {
+      res <- api.getUserEvents("526d827c-5dda-4d56-865d-9ea081031094")
+    } yield logger.info(res.mkString(", "))
+    run.unsafeRunSync()
+    IO(ExitCode.Success)
+  }
 }
+
+

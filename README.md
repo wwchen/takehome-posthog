@@ -83,3 +83,32 @@ pip install -r requirements.txt
 Will run a server on http://localhost:5000.
 
 Black is installed, so if you want you can run `black .` at the end to format your code if it is python.
+
+
+enable all kinds of analytics
+
+exploration
+filters:
+- logged in / anon users
+- properties
+- events
+- time series graph
+
+
+dashboard:
+- event funnel per user
+- overall funnel flow
+- conversion rate (anon -> logged in time)
+
+
+controller
+- combine user and event properties
+
+
+get user events
+
+data validations
+- if user id, then must have email property
+- user distinct ids are unique and not nested
+
+

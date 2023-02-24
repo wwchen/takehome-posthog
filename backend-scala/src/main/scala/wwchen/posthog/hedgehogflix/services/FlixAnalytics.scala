@@ -19,10 +19,6 @@ trait FlixAnalyticsApi {
 
   def eventPropertyCount(): Map[String, Map[String, Int]]
 
-  // count of distinct event
-  def eventCount(): Map[String, Int]
-
-  def eventKeys: Seq[String]
   def eventPropertyKeys: Seq[String]
 
   // how many events follow the prefix event chain
@@ -71,7 +67,7 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     }.sortBy(_.lastSeen)
   }
 
-  def userByDistinctId(id: String): Option[User] =
+  private def userByDistinctId(id: String): Option[User] =
     db.getUsers().find { user =>
       user.distinctIds.contains(id)
     }.map { user =>
@@ -94,7 +90,6 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     val events = db.getEvents()
     events.groupBy(_.event).map(t => (t._1, t._2.length))
   }
-
 
   def eventKeys: Seq[String] = {
     val events = db.getEvents()
@@ -130,8 +125,6 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
       }.toOption.getOrElse(Seq.empty).distinct
     }
   }
-
-//  private def fromDb(e: FlixEventDb.Event): Event = Event(e.event, e.timestamp, e.properties)
 
   private def countValues(map: Iterable[String]): Map[String, Int] = map.groupMapReduce(identity)(_ => 1)(_ + _)
 }

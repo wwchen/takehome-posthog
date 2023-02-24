@@ -44,6 +44,29 @@ retrieve one dimension of the data. this will probably unlock faster iterations
 Explore dimensions by event properties: browser and country values, as examples, are good ways to cohort users, if the biz need is to find
 groups to do a/b experiments, as an example.
 
-## usage
+
+## Getting Started
+### Requirements
 backend (requires sbt (brew), java, scala (v2.13)): `cd backend-scala; sbt run`
 frontend (requires npm): `cd my-app; npm install && npm start`
+
+### Local environment setup
+For macOS users, if you do not already have Java, scala, sbt, the recommended way to get set up is
+```
+brew install coursier/formulas/coursier && cs setup
+```
+For other environments, [follow scala's official guide](https://docs.scala-lang.org/getting-started/index.html)
+
+## Usage
+`sbt run` - compiles and starts the http server `Main.scala`
+`sbt test` - compiles and executes unit tests
+
+## endpoints
+```
+    GET "user" / userId / "events"
+    GET "user" / userId / "event-properties"
+    GET "users"
+    GET "event-properties"
+    POST "event-funnel" / "count"
+    POST "event-funnel" / "details"    
+```

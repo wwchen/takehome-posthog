@@ -112,3 +112,10 @@ data validations
 - user distinct ids are unique and not nested
 
 
+funnel (before/after)
+how many authed users
+
+explore-funnel page: starting from one event, what event leads to next, and how many
+user-details page: user events, user identity
+
+

@@ -38,7 +38,9 @@ function App() {
     })  
   
     handleFunnelClick(funnelPath);
+  }, []);
   
+  useEffect(() => {
     client.get("/event-properties").then(response => {
       console.log("fetched event properties");
       setEventProperties(response.data);
@@ -46,10 +48,10 @@ function App() {
   }, []);
 
   function handleFunnelClick(nextPath) {
-    client.post("/event-funnel", {path: funnelPath}).then(response => {
-      console.log(`fetched event funnels for '${funnelPath}'`)
-      const key = funnelPath.join("|")
-      setFunnelPath(funnelPath);
+    client.post("/event-funnel/details", {path: nextPath}).then(response => {
+      console.log(`fetched event funnels for '${nextPath}'`)
+      const key = nextPath.join("|")
+      setFunnelPath(nextPath);
       setFunnelEvents({...funnelEvents, [key]: response.data})
     })
   }
@@ -65,8 +67,8 @@ function App() {
     <div className="App">
       <h2>Funnel</h2>
       <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
-      <hr />
       <h2>User Detail Page</h2>
+      <input onChange={e => handleUserDetail(e.target.value)} /> or <br />
       <select onChange={e => handleUserDetail(e.target.value)}>
         {userData.map((user) => <option value={user.id}>{user.email || user.id}</option>)}
       </select>
@@ -74,11 +76,11 @@ function App() {
         <h3>User Detail</h3>
         <User {...userData.filter((v) => v.id === currUserId)[0]} events={userEvents[currUserId]} />
       </div>
-      <h2>Events</h2>
-      <textarea>{JSON.stringify(eventProperties)}</textarea>
+      <hr></hr>
+      <h2>Event properties, distinct by user</h2>
+      <textarea value={JSON.stringify(eventProperties, null, 4)} rows="30" cols="100"></textarea>
 
       {/* <PieChart /> */}
-      {/* <UserList users={userData} /> */}
     </div>
   );
 }

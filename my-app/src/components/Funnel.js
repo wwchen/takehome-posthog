@@ -3,33 +3,45 @@ import React from "react";
 import axios from "axios";
 
 export default function Funnel({funnelPath, funnelEvents, handleFunnelClick}) {
-    const client = axios.create({
-        baseURL: "http://localhost:8080",
-        headers: {"Access-Control-Allow-Origin": "*"}
-    });
-
     console.log("rendering", funnelPath, funnelEvents);
+    function getFunnelEvents(path) {
+        const key = path.join("|")
+        return funnelEvents[key] || {};
+    }
+
     return (
-    <div>
-        {funnelPath.map((p, i) => {
-            const subPath = funnelPath.slice(0, i+1)
-            const key = subPath.join("|")
-            const subEvents = funnelEvents[key] || {};
-            console.log("drawing", subPath, key, funnelEvents);
-            return (
-            <> {Object.keys(subEvents).map((event) => {
-                const eventCount = subEvents[event]
-                const buttonId = key + event
-                const nextPath = [...subPath, event]
-                return (<>
-                    <button key={buttonId} onClick={() => handleFunnelClick(nextPath)}>
-                        {event}({eventCount})
-                    </button><br></br>
-                </>)
-            })}
-            </>)
-        })}
-    </div>
+        <div>
+            {funnelPath.map((p, i) => {
+                const subPath = funnelPath.slice(0, i+1)
+                const key = subPath.join("|")
+                const subEvents = funnelEvents[key] || [];
+                console.log("drawing", subPath, key, subEvents);
+                return (
+                    <>
+                    <h3>Step {i+1}: {subPath.at(-1)}</h3>
+                    {subEvents.map((event) => {
+                        const name = event.event
+                        const userIds = event.userIds 
+                        const eventCount = userIds.length
+                        const buttonId = key + name
+                        const nextPath = [...subPath, name]
+                        console.log(name, eventCount, buttonId, nextPath);
+                        return (
+                            <>
+                                <div>
+                                    <button key={buttonId} onClick={() => handleFunnelClick(nextPath)}>
+                                        {name}({eventCount})
+                                    </button>
+                                    <textarea rows="10" cols="40">{userIds.join("\n")}</textarea>
+                                </div>
+                                <br></br>
+                            </>
+                        )}
+                    )}
+                    <hr />
+                    </>
+                )}
+            )}
+        </div>
     )
-    
 }

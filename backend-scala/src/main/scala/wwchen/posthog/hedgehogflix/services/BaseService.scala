@@ -22,7 +22,12 @@ class BaseService(db: FlixEventDb, api: FlixAnalyticsApi) {
 //    case GET -> Root / "events" => handleRequest(db.getEvents())
 //    case GET -> Root / "events" / "count" => handleRequest(api.eventCount())
     case GET -> Root / "event-properties" => handleRequest(api.eventPropertyCount())
-    case r @ POST -> Root / "event-funnel" => handleRequestIO {
+    case r @ POST -> Root / "event-funnel" / "count" => handleRequestIO {
+      for {
+        req <- r.as[EventFunnelRequest]
+      } yield api.eventChainingCount(req.path)
+    }
+    case r@POST -> Root / "event-funnel" / "details" => handleRequestIO {
       for {
         req <- r.as[EventFunnelRequest]
       } yield api.eventChaining(req.path)

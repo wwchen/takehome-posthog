@@ -19,6 +19,7 @@ function App() {
 
   const [userData, setUserData] = useState([]);
   const [userEvents, setUserEvents] = useState({});
+  const [userProps, setUserProps] = useState({});
   const [currUserId, setCurrUserId] = useState("");
 
   const [eventProperties, setEventProperties] = useState({});
@@ -60,6 +61,10 @@ function App() {
     client.get(`user/${userId}/events`).then((response) => {
       setUserEvents({...userEvents, [userId]: response.data});
       setCurrUserId(userId);
+    });
+    client.get(`user/${userId}/event-properties`).then((response) => {
+      setUserProps({...userProps, [userId]: response.data});
+      setCurrUserId(userId);
     })
   }
   
@@ -74,7 +79,7 @@ function App() {
       </select>
       <div>
         <h3>User Detail</h3>
-        <User {...userData.filter((v) => v.id === currUserId)[0]} events={userEvents[currUserId]} />
+        <User {...userData.filter((v) => v.id === currUserId)[0]} events={userEvents[currUserId]} props={userProps[currUserId]} />
       </div>
       <hr></hr>
       <h2>Event properties, distinct by user</h2>

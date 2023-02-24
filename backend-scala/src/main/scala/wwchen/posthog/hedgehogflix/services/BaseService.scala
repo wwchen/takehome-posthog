@@ -17,7 +17,7 @@ class BaseService(db: FlixEventDb, api: FlixAnalyticsApi) {
 
   val routes: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root / "user" / userId / "events" => handleRequest(api.userEvents(userId))
-    case GET -> Root / "user" / userId / "eventProperties" => handleRequest(api.userEventProperties(userId))
+    case GET -> Root / "user" / userId / "event-properties" => handleRequest(api.userEventProperties(userId))
     case GET -> Root / "users" => handleRequest(api.users())
     case GET -> Root / "event-properties" => handleRequest(api.eventPropertyCount())
     case r @ POST -> Root / "event-funnel" / "count" => handleRequestIO {

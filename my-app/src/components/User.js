@@ -1,7 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import UserEvent from './UserEvent';
-import UserProperties from './UserProperties';
+import UserEvent from 'components/UserEvent';
+import UserProperties from 'components/UserProperties';
 
 export default function User({ id, email, lastSeen, isAnon, events, props }) {
     return (

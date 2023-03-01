@@ -37,7 +37,10 @@ what I have envisioned for that is:
     2. at a glance see what the top of funnel events are, major paths, drop off paths
     3. double click into a specific flow, by picking an user that matches this even flow
     4. now we're at granular level of studying user behavior and from their event log, discover insight where one might be stuck, abandoned, etc
-Supplemental to this, are features like filter by property, anon/auth'd user, biz tags
+
+Another user story to add, is based around time series and discoverying hotspots
+This would be achieved by adding features like filter by property, anon/auth'd user, biz tags; viz on timeseries, segments, 
+
 3. more flexible querying - allow frontend to construct data queries, instead of single-purpose backend endpoints to
 retrieve one dimension of the data. this will probably unlock faster iterations
 
@@ -47,8 +50,8 @@ groups to do a/b experiments, as an example.
 
 ## Getting Started
 ### Requirements
-backend (requires sbt (brew), java, scala (v2.13)): `cd backend-scala; sbt run`
-frontend (requires npm): `cd my-app; npm install && npm start`
+- backend (requires sbt (brew), java, scala (v2.13)): `cd backend-scala; sbt run`
+- frontend (requires npm): `cd my-app; npm install && npm start`
 
 ### Local environment setup
 For macOS users, if you do not already have Java, scala, sbt, the recommended way to get set up is
@@ -70,3 +73,15 @@ For other environments, [follow scala's official guide](https://docs.scala-lang.
     POST "event-funnel" / "count"
     POST "event-funnel" / "details"    
 ```
+
+## walkthrough
+1. product, get feedback
+  1. flow's caveat: doens't allow for circular flows. will need to rework to enable backstepping
+2. implementation commentary
+3. technical q's
+  1. react pages/navigation - how to "hide" components
+  2. any good way to "walk" down a json object?
+  3. how to avoid function calls on null/undefined objects
+  4. how to pass type hinting
+  5. smart ide to import components
+  6. 

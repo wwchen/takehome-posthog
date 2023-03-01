@@ -1,15 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
-import './components/UserList';
 import axios from "axios";
 import { useEffect, useState } from 'react';
-import User from './components/User';
-import UserList from './components/UserList';
-import Funnel from './components/Funnel';
-import UserEvent from './components/UserEvent';
+import 'App.css';
+import Funnel from 'components/Funnel';
+import User from 'components/User';
+import 'components/UserList';
 
 import React from "react";
-import { render } from "react-dom";
 import { VictoryPie } from "victory";
 
 

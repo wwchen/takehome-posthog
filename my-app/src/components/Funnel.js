@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from 'antd';
 
 export default function Funnel({funnelPath, funnelEvents, handleFunnelClick}) {
     console.log("rendering", funnelPath, funnelEvents);
@@ -27,9 +28,9 @@ export default function Funnel({funnelPath, funnelEvents, handleFunnelClick}) {
                         return (
                             <>
                                 <div>
-                                    <button key={buttonId} onClick={() => handleFunnelClick(nextPath)}>
+                                    <Button key={buttonId} onClick={() => handleFunnelClick(nextPath)}>
                                         {name}({eventCount})
-                                    </button>
+                                    </Button>
                                     <textarea rows="10" cols="40">{userIds.join("\n")}</textarea>
                                 </div>
                                 <br></br>

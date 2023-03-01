@@ -1,12 +1,14 @@
-import axios from "axios";
-import { useEffect, useState } from 'react';
 import 'App.css';
+import axios from "axios";
 import Funnel from 'components/Funnel';
 import User from 'components/User';
 import 'components/UserList';
+import { useEffect, useState } from 'react';
 
 import React from "react";
 import { VictoryPie } from "victory";
+
+import 'antd/dist/reset.css';
 
 
 function App() {

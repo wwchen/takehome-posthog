@@ -5,71 +5,68 @@ import User from 'components/User'
 import 'components/UserList'
 import { useEffect, useState } from 'react'
 
-import { VictoryPie } from 'victory'
-
 import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
+import { Github } from 'components/Github'
 
 function App() {
-  const [funnelPath, setFunnelPath] = useState(['x'])
-  const [funnelEvents, setFunnelEvents] = useState({})
+  // const [funnelPath, setFunnelPath] = useState(['x'])
+  // const [funnelEvents, setFunnelEvents] = useState({})
 
-  const [userData, setUserData] = useState([])
-  const [userEvents, setUserEvents] = useState({})
-  const [userProps, setUserProps] = useState({})
-  const [currUserId, setCurrUserId] = useState('')
+  // const [userData, setUserData] = useState([])
+  // const [userEvents, setUserEvents] = useState({})
+  // const [userProps, setUserProps] = useState({})
+  // const [currUserId, setCurrUserId] = useState('')
 
-  const [eventProperties, setEventProperties] = useState({})
+  // const [eventProperties, setEventProperties] = useState({})
 
-  const client = axios.create({
-    baseURL: 'http://localhost:8080',
-    headers: { 'Access-Control-Allow-Origin': '*' },
-  })
-  const PieChart = () => {
-    return <VictoryPie />
-  }
+  // const client = axios.create({
+  //   baseURL: 'http://localhost:8080',
+  //   headers: { 'Access-Control-Allow-Origin': '*' },
+  // })
 
-  useEffect(() => {
-    client.get('/users').then((response) => {
-      console.log('fetched users')
-      setUserData(response.data)
-    })
+  // useEffect(() => {
+  //   client.get('/users').then((response) => {
+  //     console.log('fetched users')
+  //     setUserData(response.data)
+  //   })
 
-    handleFunnelClick(funnelPath)
-  }, [])
+  //   handleFunnelClick(funnelPath)
+  // }, [])
 
-  useEffect(() => {
-    client.get('/event-properties').then((response) => {
-      console.log('fetched event properties')
-      setEventProperties(response.data)
-    })
-  }, [])
+  // useEffect(() => {
+  //   client.get('/event-properties').then((response) => {
+  //     console.log('fetched event properties')
+  //     setEventProperties(response.data)
+  //   })
+  // }, [])
 
-  function handleFunnelClick(nextPath) {
-    client.post('/event-funnel/details', { path: nextPath }).then((response) => {
-      console.log(`fetched event funnels for '${nextPath}'`)
-      const key = nextPath.join('|')
-      setFunnelPath(nextPath)
-      setFunnelEvents({ ...funnelEvents, [key]: response.data })
-    })
-  }
+  // function handleFunnelClick(nextPath) {
+  //   client.post('/event-funnel/details', { path: nextPath }).then((response) => {
+  //     console.log(`fetched event funnels for '${nextPath}'`)
+  //     const key = nextPath.join('|')
+  //     setFunnelPath(nextPath)
+  //     setFunnelEvents({ ...funnelEvents, [key]: response.data })
+  //   })
+  // }
 
-  function handleUserDetail(userId) {
-    client.get(`user/${userId}/events`).then((response) => {
-      setUserEvents({ ...userEvents, [userId]: response.data })
-      setCurrUserId(userId)
-    })
-    client.get(`user/${userId}/event-properties`).then((response) => {
-      setUserProps({ ...userProps, [userId]: response.data })
-      setCurrUserId(userId)
-    })
-  }
+  // function handleUserDetail(userId) {
+  //   client.get(`user/${userId}/events`).then((response) => {
+  //     setUserEvents({ ...userEvents, [userId]: response.data })
+  //     setCurrUserId(userId)
+  //   })
+  //   client.get(`user/${userId}/event-properties`).then((response) => {
+  //     setUserProps({ ...userProps, [userId]: response.data })
+  //     setCurrUserId(userId)
+  //   })
+  // }
 
   return (
     <div className="App">
       <h2>Funnel</h2>
       <FunnelExploration />
-      <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
+      <Github />
+      {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
       <h2>User Detail Page</h2>
       <input onChange={(e) => handleUserDetail(e.target.value)} /> or <br />
       <select onChange={(e) => handleUserDetail(e.target.value)}>
@@ -87,8 +84,7 @@ function App() {
       </div>
       <hr></hr>
       <h2>Event properties, distinct by user</h2>
-      <textarea value={JSON.stringify(eventProperties, null, 4)} rows="30" cols="100"></textarea>
-      {/* <PieChart /> */}
+      <textarea value={JSON.stringify(eventProperties, null, 4)} readOnly rows="30" cols="100"></textarea> */}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import cats.implicits._
 import com.typesafe.scalalogging.Logger
 import wwchen.posthog.hedgehogflix.db.FlixEventDb
 import wwchen.posthog.hedgehogflix.db.FlixEventDb.Event
-import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, User}
+import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, NextEventItem, User}
 
 import java.time.LocalDateTime
 import scala.util.Try
@@ -24,10 +24,13 @@ trait FlixAnalyticsApi {
   // how many events follow the prefix event chain
   def eventChaining(chain: Seq[String]): Iterable[AggEvent]
   def eventChainingCount(chain: Seq[String]): Map[String, Int]
+
+  def nextEvents(chain: Seq[String]): Iterable[NextEventItem]
 }
 
 object FlixAnalytics {
   case class AggEvent(event: String, lastFired: LocalDateTime, properties: Map[String, String], userIds: Set[String])
+  case class NextEventItem(event: Option[String], count: Int)
   case class User(id: String, email: Option[String], lastSeen: LocalDateTime, isAnon: Boolean)
 }
 
@@ -114,6 +117,24 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     countValues(eventChainingIterable(chain).map(_.event))
   }
 
+  def nextEvents(breadcrumb: Seq[String]): Iterable[NextEventItem] = {
+    val eventChains = eventsByUser.values.map(_.map(_.event))
+    val nextEvents = if (breadcrumb.isEmpty) {
+      eventChains
+    } else {
+      logger.info("here")
+      eventChains
+        .filter(_.startsWith(breadcrumb))
+        .map(_.splitAt(breadcrumb.length)._2)
+    }
+    nextEvents
+      .map(_.headOption)
+      .groupMapReduce(identity)(toNextEventItem)((a, b) => a.copy(count = a.count + b.count))
+      .values
+      .toSeq
+      .sortBy(-_.count)
+  }
+
   private def eventChainingIterable(chain: Seq[String]) = {
     eventsByUser.values.flatMap { e =>
       val events = e.map(_.event)
@@ -125,6 +146,8 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
       }.toOption.getOrElse(Seq.empty).distinct
     }
   }
+
+  private def toNextEventItem(event: Option[String]) = NextEventItem(event, 1)
 
   private def countValues(map: Iterable[String]): Map[String, Int] = map.groupMapReduce(identity)(_ => 1)(_ + _)
 }

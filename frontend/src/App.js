@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 
 import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
+import { FunnelFlow } from 'components/FunnelFlow'
 import { Github } from 'components/Github'
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
     <div className="App">
       <h2>Funnel</h2>
       <FunnelExploration />
+      <FunnelFlow />
       <Github />
       {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
       <h2>User Detail Page</h2>

@@ -4,7 +4,7 @@ import cats.implicits._
 import com.typesafe.scalalogging.Logger
 import wwchen.posthog.hedgehogflix.db.FlixEventDb
 import wwchen.posthog.hedgehogflix.db.FlixEventDb.Event
-import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, NextEventItem, User}
+import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, Edge, NextEventItem, User}
 
 import java.time.LocalDateTime
 import scala.util.Try
@@ -26,12 +26,16 @@ trait FlixAnalyticsApi {
   def eventChainingCount(chain: Seq[String]): Map[String, Int]
 
   def nextEvents(chain: Seq[String]): Iterable[NextEventItem]
+
+  def edges(): Iterable[Edge]
 }
 
 object FlixAnalytics {
   case class AggEvent(event: String, lastFired: LocalDateTime, properties: Map[String, String], userIds: Set[String])
   case class NextEventItem(event: Option[String], count: Int)
   case class User(id: String, email: Option[String], lastSeen: LocalDateTime, isAnon: Boolean)
+
+  case class Edge(from: String, to: String, count: Int)
 }
 
 class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
@@ -135,6 +139,14 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
       .sortBy(-_.count)
   }
 
+  def edges(): Iterable[Edge] = {
+    val eventChains = eventsByUser.values.map(_.map(_.event)).map(e => Seq("*") ++ e ++ Seq("* user drop off"))
+    val tuples = eventChains.flatMap(_.sliding(2))
+    countValues(tuples).map { ki =>
+      Edge(ki._1.head, ki._1.last, ki._2)
+    }.toSeq.sortBy(-_.count)
+  }
+
   private def eventChainingIterable(chain: Seq[String]) = {
     eventsByUser.values.flatMap { e =>
       val events = e.map(_.event)
@@ -149,5 +161,5 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
 
   private def toNextEventItem(event: Option[String]) = NextEventItem(event, 1)
 
-  private def countValues(map: Iterable[String]): Map[String, Int] = map.groupMapReduce(identity)(_ => 1)(_ + _)
+  private def countValues[A](map: Iterable[A]): Map[A, Int] = map.groupMapReduce(identity)(_ => 1)(_ + _)
 }

@@ -68,7 +68,7 @@ function App() {
       <h2>Funnel</h2>
       <FunnelExploration />
       <FunnelFlow />
-      {/* <EventDetails /> */}
+      <EventDetails />
       {/* <Github /> */}
       {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
       <h2>User Detail Page</h2>

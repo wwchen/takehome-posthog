@@ -3,7 +3,7 @@ package wwchen.posthog.hedgehogflix
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import io.circe.generic.auto._
-import com.comcast.ip4s.IpLiteralSyntax
+import com.comcast.ip4s.{IpLiteralSyntax, Port}
 import com.typesafe.scalalogging.Logger
 import org.http4s.server.middleware.{CORS, Logger => ServerLogger}
 import org.http4s.ember.server.EmberServerBuilder
@@ -32,10 +32,12 @@ object Main extends IOApp {
         logBody = Config.HttpServer.LogBody
       )(Router("/" -> service.routes).orNotFound))
 
+    val port = sys.env("PORT").toIntOption.getOrElse(8080)
+
     EmberServerBuilder
       .default[IO]
       .withHost(ipv4"0.0.0.0")
-      .withPort(port"8080")
+      .withPort(Port.fromInt(port).getOrElse(port"8080"))
       .withHttpApp(httpApp)
       .build
       .use(_ => IO.never)

@@ -33,7 +33,7 @@ trait FlixAnalyticsApi {
 object FlixAnalytics {
   case class AggEvent(event: String, lastFired: LocalDateTime, properties: Map[String, String], userIds: Set[String])
   case class NextEventItem(event: Option[String], count: Int)
-  case class User(id: String, email: Option[String], lastSeen: LocalDateTime, isAnon: Boolean)
+  case class User(id: String, email: Option[String], lastSeenAt: LocalDateTime, isAnon: Boolean)
 
   case class Edge(from: String, to: String, count: Int)
 
@@ -82,7 +82,7 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     db.getUsers().map { user =>
       val hasNumericalId = user.distinctIds.exists(_.forall(Character.isDigit))
       User(user.userId, user.properties.get("email"), userEvents(user.userId).last.timestamp, !hasNumericalId)
-    }.sortBy(_.lastSeen)
+    }.sortBy(_.lastSeenAt)
   }
 
   private def userByDistinctId(id: String): Option[User] =

@@ -10,6 +10,7 @@ import { FunnelExploration } from 'components/FunnelExploration'
 import { FunnelFlow } from 'components/FunnelFlow'
 import { EventDetails } from 'components/EventDetails'
 import { Github } from 'components/Github'
+import { UserTable } from 'components/UserTable'
 
 function App() {
   // const [funnelPath, setFunnelPath] = useState(['x'])
@@ -33,7 +34,7 @@ function App() {
   //     setUserData(response.data)
   //   })
 
-  //   handleFunnelClick(funnelPath)
+  //   // handleFunnelClick(funnelPath)
   // }, [])
 
   // useEffect(() => {
@@ -64,14 +65,18 @@ function App() {
   // }
 
   return (
+    <>
     <div className="App">
+      <UserTable />
+
       <h2>Funnel</h2>
       <FunnelExploration />
       <FunnelFlow />
-      <EventDetails />
+      {/* <EventDetails /> */}
       {/* <Github /> */}
-      {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
-      <h2>User Detail Page</h2>
+      {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel> */}
+      
+      {/* <h2>User Detail Page</h2>
       <input onChange={(e) => handleUserDetail(e.target.value)} /> or <br />
       <select onChange={(e) => handleUserDetail(e.target.value)}>
         {userData.map((user) => (
@@ -90,6 +95,7 @@ function App() {
       <h2>Event properties, distinct by user</h2>
       <textarea value={JSON.stringify(eventProperties, null, 4)} readOnly rows="30" cols="100"></textarea> */}
     </div>
+    </>
   )
 }
 

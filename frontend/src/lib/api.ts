@@ -61,6 +61,14 @@ export type EventStats = {
 }
 export type EventStatsResponse = EventStats[]
 
+export type User = {
+  id: string
+  email?: string
+  lastSeenAt: Date
+  isAnon: Boolean
+}
+export type GetUsersResponse = User[]
+
 export const api = {
   funnel: {
     async exploreNext(path: string[]): Promise<ExploreNextResponse> {
@@ -78,4 +86,9 @@ export const api = {
       return client.get('event/stats').then((response) => response.data)
     },
   },
+  user: {
+    async getAll(): Promise<GetUsersResponse> {
+      return client.get('users').then((response) => response.data)
+    }
+  }
 }

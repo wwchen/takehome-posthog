@@ -32,12 +32,13 @@ object Main extends IOApp {
         logBody = Config.HttpServer.LogBody
       )(Router("/" -> service.routes).orNotFound))
 
-    val port = sys.env("PORT").toIntOption.getOrElse(8080)
+    val defaultPort = "8080"
+    val port = Port.fromString(sys.env.getOrElse("PORT", defaultPort)).get
 
     EmberServerBuilder
       .default[IO]
       .withHost(ipv4"0.0.0.0")
-      .withPort(Port.fromInt(port).getOrElse(port"8080"))
+      .withPort(port)
       .withHttpApp(httpApp)
       .build
       .use(_ => IO.never)

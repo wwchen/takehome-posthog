@@ -5,6 +5,25 @@ const client = axios.create({
   baseURL: config.baseUrl,
   headers: { 'Access-Control-Allow-Origin': '*' },
 })
+// https://stackoverflow.com/questions/65692061/casting-dates-properly-from-an-api-response-in-typescript
+client.interceptors.response.use((originalResponse) => {
+  handleDates(originalResponse.data)
+  return originalResponse
+})
+
+// modified version of https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+function isIsoDateString(value: any): boolean {
+  return value && typeof value === 'string' && !isNaN(new Date(value as string).valueOf())
+}
+
+export function handleDates(body: any) {
+  if (body === null || body === undefined || typeof body !== 'object') return body
+  for (const key of Object.keys(body)) {
+    const value = body[key]
+    if (isIsoDateString(value)) body[key] = new Date(value)
+    else if (typeof value === 'object') handleDates(value)
+  }
+}
 
 export type NextStepItem = {
   event?: string

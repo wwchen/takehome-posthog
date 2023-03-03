@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, Popover, Radio, Row, Space } from 'antd'
+import { Button, Card, Col, Descriptions, Input, Popover, Radio, Row, Space, Tooltip } from 'antd'
 import { AxiosError } from 'axios'
 import { actions, events, kea, listeners, path, reducers, useActions, useValues } from 'kea'
 import { loaders } from 'kea-loaders'
@@ -7,7 +7,7 @@ import { AggEvent, api, NextStepItem } from 'lib/api'
 import { sum } from 'util/std'
 import { EventDetails } from './EventDetails'
 import type { explorationLogicType } from './FunnelExplorationType'
-import { PushpinOutlined, PushpinTwoTone } from '@ant-design/icons'
+import { MoreOutlined, PushpinTwoTone } from '@ant-design/icons'
 
 export type StepKey = string
 export type Step = {
@@ -60,14 +60,24 @@ export function FunnelExploration(): JSX.Element {
           return (
             <Col key={i}>
               <Card title={`Step ${i + 1} (${step.totalCount})`}>
-                <Radio.Group onChange={(e) => onClick(e.target.value, i)}>
+                <Radio.Group onChange={(e) => onClick(e.target.value, i)} buttonStyle="solid">
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
-                      <Popover trigger="hover" content={<EventDetails target={item.title} />}>
+                      <Space.Compact
+                        block
+                        direction="horizontal"
+                        style={{ width: '100%', verticalAlign: 'middle' }}
+                        size="middle"
+                      >
                         <Radio.Button style={{ width: '100%' }} value={item}>
                           {item.title} ({item.totalCount})
                         </Radio.Button>
-                      </Popover>
+                        <Tooltip title="Event details">
+                          <Popover trigger="hover" content={<EventDetails target={item.title} />}>
+                            <Button icon={<MoreOutlined />} />
+                          </Popover>
+                        </Tooltip>
+                      </Space.Compact>
                     ))}
                     <Radio.Button style={{ width: '100%' }} value="dropoff" disabled={true}>
                       drop off({step.dropoffCount})

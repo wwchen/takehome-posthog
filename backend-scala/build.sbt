@@ -35,6 +35,4 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq("-Ywarn-unused", "-Wunused:imports", "-nowarn", "-Ymacro-annotations"),
   )
 
-
-
-
+enablePlugins(JavaAppPackaging)

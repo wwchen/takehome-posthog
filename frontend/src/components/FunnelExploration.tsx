@@ -1,11 +1,13 @@
-import { Button, Card, Col, Radio, Row, Space } from 'antd'
+import { Button, Card, Col, Descriptions, Popover, Radio, Row, Space } from 'antd'
 import { AxiosError } from 'axios'
 import { actions, events, kea, listeners, path, reducers, useActions, useValues } from 'kea'
 import { loaders } from 'kea-loaders'
 
-import { api, NextStepItem } from 'lib/api'
+import { AggEvent, api, NextStepItem } from 'lib/api'
 import { sum } from 'util/std'
+import { EventDetails } from './EventDetails'
 import type { explorationLogicType } from './FunnelExplorationType'
+import {PushpinOutlined, PushpinTwoTone} from '@ant-design/icons'
 
 export type StepKey = string
 export type Step = {
@@ -55,17 +57,17 @@ export function FunnelExploration(): JSX.Element {
     <>
       <Row>
         {results.map((step, i) => {
-          // <Col><Card title="Root" style={{height: "100%"}}>Choose your own adventure</Card></Col>
-          // const options = step.nextSteps.sort((a, b) => (a.event && b.event ? b.count - a.count : a.event ? -1 : 1))
           return (
             <Col key={i}>
               <Card title={`Step ${i+1} (${step.totalCount})`}>
                 <Radio.Group onChange={(e) => onClick(e.target.value, i)}>
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
-                      <Radio.Button style={{ width: '100%' }} value={item}>
-                        {item.title} ({item.totalCount})
-                      </Radio.Button>
+                      <Popover trigger="hover" content={<EventDetails target={item.title} />}>
+                        <Radio.Button style={{ width: '100%' }} value={item}>
+                          {item.title} ({item.totalCount})
+                        </Radio.Button>
+                      </Popover>
                     ))}
                     <Radio.Button style={{ width: '100%' }} value="dropoff" disabled={true}>
                       drop off({step.dropoffCount})
@@ -77,6 +79,18 @@ export function FunnelExploration(): JSX.Element {
           )
         })}
       </Row>
+      {/* <Row>
+        <Col>
+          {details.map(detail => (
+            <Descriptions title="Details" bordered size="default" column={1}>
+              <Descriptions.Item label="Event name">{detail.event}</Descriptions.Item>
+              <Descriptions.Item label="Last fired at">{detail.lastFired.toLocaleString()}</Descriptions.Item>
+              <Descriptions.Item label="Properties"><EventProperty options={detail.properties} /></Descriptions.Item>
+            </Descriptions>
+          ))}
+          
+        </Col>
+      </Row> */}
     </>
   )
 }
@@ -85,6 +99,7 @@ export const explorationLogic = kea<explorationLogicType>([
   path(['src', 'components', 'FunnelExploration']),
   actions({
     setResults: (i: number, step: Step) => ({ i, step }),
+    // setDetails: (details: AggEvent[]) => ({ details }),
   }),
   loaders(({ actions, values }) => ({
     path: [
@@ -103,6 +118,15 @@ export const explorationLogic = kea<explorationLogicType>([
         },
       },
     ],
+    // details: [
+    //   [] as AggEvent[],
+    //   {
+    //     setDetails: ({ details }) => {
+    //       console.log("details set")
+    //       return details;
+    //     },
+    //   }
+    // ]
   })),
   listeners(({ actions, values }) => ({
     setPath: async (path, breakpoint) => {
@@ -124,6 +148,14 @@ export const explorationLogic = kea<explorationLogicType>([
         actions.setResultsFailure('error getting funnel results', e)
         console.warn('error getting funnel results', e)
       }
+      // details
+      // try {
+      //   const results = await api.funnel.details(path)
+      //   actions.setDetails(results)
+      // } catch (e) {
+      //   actions.setResultsFailure('error getting funnel details', e)
+      //   console.warn('error getting funnel details', e)
+      // }
     },
   })),
   events(({ props, values, actions }) => ({

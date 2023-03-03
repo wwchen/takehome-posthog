@@ -4,7 +4,7 @@ import cats.implicits._
 import com.typesafe.scalalogging.Logger
 import wwchen.posthog.hedgehogflix.db.FlixEventDb
 import wwchen.posthog.hedgehogflix.db.FlixEventDb.Event
-import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, Edge, NextEventItem, User}
+import wwchen.posthog.hedgehogflix.services.FlixAnalytics.{AggEvent, Edge, EventStats, ItemWithCount, NextEventItem, User}
 
 import java.time.LocalDateTime
 import scala.util.Try
@@ -26,8 +26,8 @@ trait FlixAnalyticsApi {
   def eventChainingCount(chain: Seq[String]): Map[String, Int]
 
   def nextEvents(chain: Seq[String]): Iterable[NextEventItem]
-
-  def edges(): Iterable[Edge]
+  def eventStats(): Seq[EventStats]
+  def eventEdges(): Iterable[Edge]
 }
 
 object FlixAnalytics {
@@ -36,6 +36,17 @@ object FlixAnalytics {
   case class User(id: String, email: Option[String], lastSeen: LocalDateTime, isAnon: Boolean)
 
   case class Edge(from: String, to: String, count: Int)
+
+  case class ItemWithStats[A](item: A, min: Int, max: Int, median: Float, average: Float)
+  case class ItemWithCount[A](item: A, count: Int)
+  case class EventStats(event: String,
+                        totalFired: Int,
+                        percentage: Float,
+                        mostPrecededBy: ItemWithCount[String],
+                        mostFollowedBy: ItemWithCount[String],
+                        lastFiredAt: LocalDateTime,
+                        properties: Map[String, Seq[ItemWithCount[String]]])
+
 }
 
 class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
@@ -126,7 +137,6 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     val nextEvents = if (breadcrumb.isEmpty) {
       eventChains
     } else {
-      logger.info("here")
       eventChains
         .filter(_.startsWith(breadcrumb))
         .map(_.splitAt(breadcrumb.length)._2)
@@ -139,7 +149,34 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
       .sortBy(-_.count)
   }
 
-  def edges(): Iterable[Edge] = {
+  def eventStats(): Seq[EventStats] = {
+    val totalEvents = db.getEvents()
+    val events = totalEvents.groupBy(_.event).values
+    val connectivity = eventEdges()
+
+    events.toSeq.map { event =>
+      val name = event.head.event
+      val connectFrom = connectivity.filter(e => e.to == name).maxBy(_.count)
+      val connectTo = connectivity.filter(e => e.from == name).maxBy(_.count)
+//      val properties = event.flatMap(_.properties.toSeq).groupMap(_._1)(_._2).view.mapValues(_.distinct).toMap
+      val properties = event.flatMap(_.properties.toSeq).groupBy(_._1).values.map { propertyKv =>
+        val propertyKey = propertyKv.head._1
+        val valuesWithCount = countValues(propertyKv.map(_._2))
+        propertyKey -> valuesWithCount.map(v => ItemWithCount.apply(v._1, v._2)).toSeq
+      }.toMap
+      EventStats(
+        event = name,
+        totalFired = event.size,
+        percentage = event.size.toFloat / totalEvents.size,
+        mostPrecededBy = ItemWithCount(connectFrom.from, connectFrom.count),
+        mostFollowedBy = ItemWithCount(connectTo.to, connectTo.count),
+        lastFiredAt = event.maxBy(_.timestamp).timestamp,
+        properties = properties
+      )
+    }.sortBy(-_.totalFired)
+  }
+
+  def eventEdges(): Seq[Edge] = {
     val eventChains = eventsByUser.values.map(_.map(_.event)).map(e => Seq("*") ++ e ++ Seq("* user drop off"))
     val tuples = eventChains.flatMap(_.sliding(2))
     countValues(tuples).map { ki =>

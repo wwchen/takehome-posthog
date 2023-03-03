@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
 import { FunnelFlow } from 'components/FunnelFlow'
+import { EventDetails } from 'components/EventDetails'
 import { Github } from 'components/Github'
 
 function App() {
@@ -67,7 +68,8 @@ function App() {
       <h2>Funnel</h2>
       <FunnelExploration />
       <FunnelFlow />
-      <Github />
+      {/* <EventDetails /> */}
+      {/* <Github /> */}
       {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel>
       <h2>User Detail Page</h2>
       <input onChange={(e) => handleUserDetail(e.target.value)} /> or <br />

@@ -19,8 +19,9 @@ class BaseService(db: FlixEventDb, api: FlixAnalyticsApi) {
     case GET -> Root / "user" / userId / "events" => handleRequest(api.userEvents(userId))
     case GET -> Root / "user" / userId / "event-properties" => handleRequest(api.userEventProperties(userId))
     case GET -> Root / "users" => handleRequest(api.users())
+    case GET -> Root / "event" / "stats" => handleRequest(api.eventStats())
     case GET -> Root / "event-properties" => handleRequest(api.eventPropertyCount())
-    case GET -> Root / "event-funnel" / "edges" => handleRequest(api.edges())
+    case GET -> Root / "event-funnel" / "edges" => handleRequest(api.eventEdges())
     case r @ POST -> Root / "event-funnel" / "next-events" => handleRequestIO {
       for {
         req <- r.as[EventFunnelRequest]

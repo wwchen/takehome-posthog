@@ -12,11 +12,14 @@ export interface EventDetailsProps {
 export function EventDetails(props: EventDetailsProps): JSX.Element {
   const { stats } = useValues(eventDetailsLogic)
 
-  const events = props.target && stats.filter(s => s.event === props.target) || stats;
+  const events = (props.target && stats.filter((s) => s.event === props.target)) || stats
   return (
-  <>
-    {events.map(s => <EventStatsItem stats={s} />)}
-  </>)
+    <>
+      {events.map((s) => (
+        <EventStatsItem stats={s} />
+      ))}
+    </>
+  )
 }
 
 export const eventDetailsLogic = kea<eventDetailsLogicType>([
@@ -27,10 +30,10 @@ export const eventDetailsLogic = kea<eventDetailsLogicType>([
   }),
   loaders(({ actions, values }) => ({
     stats: [
-      [] as EventStats[], 
+      [] as EventStats[],
       {
-      setStats: ({stats}) => (stats)
-      }
+        setStats: ({ stats }) => stats,
+      },
     ],
   })),
   listeners(({ actions, values }) => ({

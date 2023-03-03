@@ -7,14 +7,14 @@ import { AggEvent, api, NextStepItem } from 'lib/api'
 import { sum } from 'util/std'
 import { EventDetails } from './EventDetails'
 import type { explorationLogicType } from './FunnelExplorationType'
-import {PushpinOutlined, PushpinTwoTone} from '@ant-design/icons'
+import { PushpinOutlined, PushpinTwoTone } from '@ant-design/icons'
 
 export type StepKey = string
 export type Step = {
-  index: number,
-  title: StepKey,
-  totalCount: number,
-  dropoffCount: number,
+  index: number
+  title: StepKey
+  totalCount: number
+  dropoffCount: number
   nextSteps: NextStep[]
 }
 export type NextStep = Pick<Step, 'title' | 'totalCount'>
@@ -25,19 +25,19 @@ function emptyDb(): FlowDb {
   return [
     {
       index: 0,
-      title: "Root",
+      title: 'Root',
       totalCount: 0,
       dropoffCount: 0,
-      nextSteps: []
-    }
+      nextSteps: [],
+    },
   ]
 }
 
-const isDropoff = (item: NextStepItem) => ( !item.event )
+const isDropoff = (item: NextStepItem) => !item.event
 
 function toStep(item: NextStepItem): NextStep {
   if (!item.event) {
-    throw new Error("cannot map drop off events to next step")
+    throw new Error('cannot map drop off events to next step')
   }
   return {
     title: item.event,
@@ -59,7 +59,7 @@ export function FunnelExploration(): JSX.Element {
         {results.map((step, i) => {
           return (
             <Col key={i}>
-              <Card title={`Step ${i+1} (${step.totalCount})`}>
+              <Card title={`Step ${i + 1} (${step.totalCount})`}>
                 <Radio.Group onChange={(e) => onClick(e.target.value, i)}>
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
@@ -134,12 +134,12 @@ export const explorationLogic = kea<explorationLogicType>([
       try {
         const results: NextStepItem[] = await api.funnel.exploreNext(path)
         const dropoffEvents = results.filter(isDropoff)
-        const nextEvents = results.filter(i => !isDropoff(i))
+        const nextEvents = results.filter((i) => !isDropoff(i))
         const step: Step = {
           index: path.length,
           title: path.slice(-1)[0],
-          totalCount: sum(results.map(i => i.count)),
-          dropoffCount: sum(dropoffEvents.map(i => i.count)) || 0,
+          totalCount: sum(results.map((i) => i.count)),
+          dropoffCount: sum(dropoffEvents.map((i) => i.count)) || 0,
           nextSteps: nextEvents.map(toStep),
         }
         actions.setResults(path.length + 1, step)

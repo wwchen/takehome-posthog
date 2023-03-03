@@ -51,11 +51,11 @@ export const api = {
     },
     async details(path: string[]): Promise<DetailsResponse> {
       return client.post('event-funnel/details', { path }).then((response) => response.data)
-    }
+    },
   },
   event: {
     async stats(): Promise<EventStatsResponse> {
       return client.get('event/stats').then((response) => response.data)
-    }
-  }
+    },
+  },
 }

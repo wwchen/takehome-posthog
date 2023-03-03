@@ -61,11 +61,19 @@ export type EventStats = {
 }
 export type EventStatsResponse = EventStats[]
 
+export type Event = {
+  event: string
+  distinct_id: string
+  timestamp: Date
+  properties: Record<string, string>
+}
+
 export type User = {
   id: string
   email?: string
   lastSeenAt: Date
   isAnon: Boolean
+  events: Event[]
 }
 export type GetUsersResponse = User[]
 

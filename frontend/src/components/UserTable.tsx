@@ -14,30 +14,33 @@ export function UserTable(): JSX.Element {
 
   const columns: ColumnsType<User> = [
     {
-      title: 'Logged in',
+      title: 'User ID',
       dataIndex: 'isAnon',
-      render: ((value, record, i) => !!!record.isAnon ? <CheckOutlined /> : <CloseOutlined />)
-    },
-    {
-      title: 'ID',
-      dataIndex: 'id'
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email'
+      render: ((value, record, i) => record.isAnon ? record.id : record.email),
+      filters: [
+        { text: "Logged in", value: false },
+        { text: "Anonymous user", value: true },
+      ],
+      onFilter: (value, record) => record.isAnon === value,
     },
     {
       title: 'Last seen at',
       dataIndex: 'lastSeenAt',
-      render: ((value, record, i) => record.lastSeenAt?.toLocaleString('en-US'))
+      render: ((value, record, i) => record.lastSeenAt?.toLocaleString('en-US')),
+      sorter: (a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime(),
+    },
+    {
+      title: 'Events',
+      dataIndex: 'lastSeenAt',
+      render: ((value, record, i) => record.events.map(e => e.event).join(", ")),
     },
   ]
 
   return (
     <>
-      <Form component={false}>
-        <Table bordered columns={columns} dataSource={users} />
-      </Form>
+      
+        <Table<User> style={{borderCollapse: "collapse"}} bordered columns={columns} dataSource={users} />
+      
     </>
   )
 }

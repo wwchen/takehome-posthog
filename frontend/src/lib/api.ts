@@ -1,7 +1,8 @@
 import axios from 'axios'
+import { config } from 'util/env'
 
 const client = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: config.baseUrl,
   headers: { 'Access-Control-Allow-Origin': '*' },
 })
 

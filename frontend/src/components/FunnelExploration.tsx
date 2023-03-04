@@ -4,10 +4,8 @@ import { useActions, useValues } from 'kea'
 import { MoreOutlined, FilterOutlined } from '@ant-design/icons'
 import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
+import { FunnelStepButton } from './FunnelStepButton'
 
-export function FunnelStep(): JSX.Element {
-  return <></>
-}
 
 export function FunnelExploration(): JSX.Element {
   const { setPath } = useActions(eventFunnelLogic)
@@ -27,54 +25,31 @@ export function FunnelExploration(): JSX.Element {
                 <Radio.Group onChange={(e) => onClick(e.target.value, i)} buttonStyle="solid">
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
-                      <Space.Compact
-                        block
-                        direction="horizontal"
-                        style={{ width: '100%', verticalAlign: 'middle' }}
-                        size="middle"
-                      >
-                        <Radio.Button style={{ width: '100%' }} value={item}>
-                          {item.title} ({item.totalCount})
-                        </Radio.Button>
-                        <Tooltip title="Event details">
+                      <>
+                      <FunnelStepButton
+                        value={item}
+                        content={`${item.title} (${item.totalCount})`}
+                        button1Label="Event details"
+                        button1={
                           <Popover trigger="hover" content={<EventDetails target={item.title} />}>
                             <Button icon={<MoreOutlined />} />
-                          </Popover>
-                        </Tooltip>
-                        <Tooltip title="Filter">
-                          <Button icon={<FilterOutlined />} />
-                        </Tooltip>
-                      </Space.Compact>
+                          </Popover>}
+                        button2Label="Filter"
+                        button2={(<Button icon={<FilterOutlined />} />)} />
+                        </>
                     ))}
-                    {/* drop off */}
-                    <Space.Compact
-                      block
-                      direction="horizontal"
-                      style={{ width: '100%', verticalAlign: 'middle' }}
-                      size="middle"
-                    >
-                      <Radio.Button style={{ width: '100%' }} value="dropoff" disabled={true}>
-                        drop off({step.dropoffCount})
-                      </Radio.Button>
-                      <Tooltip title="Filter">
-                        <Button icon={<FilterOutlined />} />
-                      </Tooltip>
-                    </Space.Compact>
-                    {/* total */}
-                    <Space.Compact
-                      block
-                      direction="horizontal"
-                      style={{ width: '100%', verticalAlign: 'middle' }}
-                      size="middle"
-                    >
-                      <Radio.Button style={{ width: '100%' }} value="total" disabled={true}>
-                        total in step ({step.totalCount})
-                      </Radio.Button>
-                      <Tooltip title="Filter">
-                        <Button icon={<FilterOutlined />} />
-                      </Tooltip>
-                    </Space.Compact>
-                    {/* end */}
+                    <FunnelStepButton
+                      value='dropoff'
+                      content={`drop off (${step.dropoffCount})`}
+                      disabled
+                      button1Label="Filter" 
+                      button1={(<Button icon={<FilterOutlined />} />)} />
+                    <FunnelStepButton
+                      value='total'
+                      content={`Total in step (${step.totalCount})`}
+                      disabled
+                      button1Label="Filter" 
+                      button1={(<Button icon={<FilterOutlined />} />)} />
                   </Space>
                 </Radio.Group>
               </Card>

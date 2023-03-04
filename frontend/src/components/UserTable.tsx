@@ -10,7 +10,6 @@ import { EventTimeline } from './EventTimeline'
 import { User } from 'lib/api'
 import { userTableLogic } from 'scenes/userTableLogic'
 
-
 export type FilterType = 'all-users' | 'filter-by-id' | 'anon-users' | 'authed-users'
 
 export function UserTable(): JSX.Element {
@@ -42,7 +41,7 @@ export function UserTable(): JSX.Element {
       title: 'Properties',
       dataIndex: 'associatedEventProperties',
       render: (value, record, i) => {
-        return Object.entries(record.associatedEventProperties).map((kv) => <Tag>{kv.join(": ")}</Tag>)
+        return Object.entries(record.associatedEventProperties).map((kv) => <Tag>{kv.join(': ')}</Tag>)
       },
     },
   ]
@@ -53,7 +52,12 @@ export function UserTable(): JSX.Element {
       <Card title="Users">
         <Form layout="inline">
           <Form.Item label="Users">
-            <Radio.Group defaultValue="all-users" onChange={e => {setFilter(e.target.value)}}>
+            <Radio.Group
+              defaultValue="all-users"
+              onChange={(e) => {
+                setFilter(e.target.value)
+              }}
+            >
               <Radio.Button value="all-users">Show all users</Radio.Button>
               <Radio.Button value="filter-by-id">Show users in funnel only</Radio.Button>
               <Radio.Button value="anon-users">Show only anonymous users</Radio.Button>
@@ -88,4 +92,3 @@ export function UserTable(): JSX.Element {
     </>
   )
 }
-

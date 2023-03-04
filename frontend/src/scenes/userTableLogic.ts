@@ -16,7 +16,7 @@ export const userTableLogic = kea<userTableLogicType>([
   actions({
     setFilter: (filterType: FilterType, whitelistUserIds?: string[]) => ({ filterType, whitelistUserIds }),
   }),
-  
+
   reducers(({ actions, values }) => ({
     // filteredUsers: [
     //   [] as User[],
@@ -51,7 +51,7 @@ export const userTableLogic = kea<userTableLogicType>([
     //   }
     // ],
     currentFilter: [
-      {filterType: 'all-users'} as { filterType: FilterType, whitelistUserIds?: string[] },
+      { filterType: 'all-users' } as { filterType: FilterType; whitelistUserIds?: string[] },
       {
         setFilter: (_, args) => args,
       },
@@ -71,7 +71,7 @@ export const userTableLogic = kea<userTableLogicType>([
           case 'filter-by-id':
             return users.filter((u) => (filter.whitelistUserIds?.indexOf(u.id) || -1) > 0)
         }
-      }
-    ]
+      },
+    ],
   }),
 ])

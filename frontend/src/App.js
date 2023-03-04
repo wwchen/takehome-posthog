@@ -66,17 +66,17 @@ function App() {
 
   return (
     <>
-    <div className="App">
-      <UserTable />
+      <div className="App">
+        <UserTable />
 
-      <h2>Funnel</h2>
-      <FunnelExploration />
-      <FunnelFlow />
-      {/* <EventDetails /> */}
-      {/* <Github /> */}
-      {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel> */}
-      
-      {/* <h2>User Detail Page</h2>
+        <h2>Funnel</h2>
+        <FunnelExploration />
+        <FunnelFlow />
+        {/* <EventDetails /> */}
+        {/* <Github /> */}
+        {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel> */}
+
+        {/* <h2>User Detail Page</h2>
       <input onChange={(e) => handleUserDetail(e.target.value)} /> or <br />
       <select onChange={(e) => handleUserDetail(e.target.value)}>
         {userData.map((user) => (
@@ -94,7 +94,7 @@ function App() {
       <hr></hr>
       <h2>Event properties, distinct by user</h2>
       <textarea value={JSON.stringify(eventProperties, null, 4)} readOnly rows="30" cols="100"></textarea> */}
-    </div>
+      </div>
     </>
   )
 }

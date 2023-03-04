@@ -13,11 +13,11 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <Card title={`Event details for: '${stats.event}'`} style={{width: "60em"}}>
+      <Card title={`Event details for: '${stats.event}'`} style={{ width: '60em' }}>
         <Row>
           {/* top left card */}
           <Col span={12}>
-            <Card title="Statistics" style={{height: "100%"}} type="inner">
+            <Card title="Statistics" style={{ height: '100%' }} type="inner">
               <Row gutter={[14, 14]}>
                 <Col span={12}>
                   <Statistic title="Total count" value={stats.totalFired} />
@@ -33,7 +33,7 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
           </Col>
           {/* top right card */}
           <Col span={12}>
-            <Card title="Context" type='inner'>
+            <Card title="Context" type="inner">
               <Timeline mode="left">
                 <Timeline.Item label="Most preceded event">
                   {stats.mostPrecededBy.item} ({stats.mostPrecededBy.count})
@@ -48,7 +48,7 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
             </Card>
           </Col>
           <Col span={24}>
-            <Card title="All captured event properties" type='inner'>
+            <Card title="All captured event properties" type="inner">
               <Descriptions bordered layout="horizontal" column={1} size="small" contentStyle={{ textAlign: 'left' }}>
                 {Object.entries(stats.properties).map(([k, v]) => (
                   <Descriptions.Item label={k}>

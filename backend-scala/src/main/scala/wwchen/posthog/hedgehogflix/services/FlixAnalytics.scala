@@ -32,8 +32,8 @@ trait FlixAnalyticsApi {
 
 object FlixAnalytics {
   case class AggEvent(event: String, lastFired: LocalDateTime, properties: Map[String, String], userIds: Set[String])
-  case class NextEventItem(event: Option[String], count: Int)
-  case class User(id: String, email: Option[String], lastSeenAt: LocalDateTime, isAnon: Boolean, events: Option[Seq[Event]])
+  case class NextEventItem(event: Option[String], count: Int, matchingUserIds: Seq[String])
+  case class User(id: String, email: Option[String], lastSeenAt: LocalDateTime, isAnon: Boolean, associatedEventProperties: Map[String, String])
 
   case class Edge(from: String, to: String, count: Int)
 
@@ -81,7 +81,7 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
   def users(): Seq[User] = {
     db.getUsers().map { user =>
       val hasNumericalId = user.distinctIds.exists(_.forall(Character.isDigit))
-      User(user.userId, user.properties.get("email"), userEvents(user.userId).last.timestamp, !hasNumericalId, Some(userEvents(user.userId)))
+      User(user.userId, user.properties.get("email"), userEvents(user.userId).last.timestamp, !hasNumericalId, userEventProperties(user.userId))
     }.sortBy(_.lastSeenAt)
   }
 
@@ -90,7 +90,7 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
       user.distinctIds.contains(id)
     }.map { user =>
       val hasNumericalId = user.distinctIds.exists(_.forall(Character.isDigit))
-      User(user.userId, user.properties.get("email"), userEvents(user.userId).last.timestamp, !hasNumericalId, None)
+      User(user.userId, user.properties.get("email"), userEvents(user.userId).last.timestamp, !hasNumericalId, Map.empty)
     }
 
   def userEventProperties(userId: String): Map[String, String] =
@@ -133,17 +133,24 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
   }
 
   def nextEvents(breadcrumb: Seq[String]): Iterable[NextEventItem] = {
-    val eventChains = eventsByUser.values.map(_.map(_.event))
+    val eventChains = eventsByUser.view.mapValues(_.map(_.event)).toMap
     val nextEvents = if (breadcrumb.isEmpty) {
       eventChains
     } else {
       eventChains
-        .filter(_.startsWith(breadcrumb))
-        .map(_.splitAt(breadcrumb.length)._2)
+        .filter(kv => kv._2.startsWith(breadcrumb))
+        .view
+        .mapValues(_.splitAt(breadcrumb.length)._2)
+        .toMap
     }
     nextEvents
-      .map(_.headOption)
-      .groupMapReduce(identity)(toNextEventItem)((a, b) => a.copy(count = a.count + b.count))
+      .groupMapReduce(_._2.headOption)(
+        kv => toNextEventItem(kv._1, kv._2.headOption)
+      )(
+        (a, b) => a.copy(
+          count = a.count + b.count,
+          matchingUserIds = a.matchingUserIds ++ b.matchingUserIds)
+      )
       .values
       .toSeq
       .sortBy(-_.count)
@@ -196,7 +203,7 @@ class FlixAnalytics(db: FlixEventDb) extends FlixAnalyticsApi {
     }
   }
 
-  private def toNextEventItem(event: Option[String]) = NextEventItem(event, 1)
+  private def toNextEventItem(userId: String, firstEvent: Option[String]) = NextEventItem(firstEvent, 1, Seq(userId))
 
   private def countValues[A](map: Iterable[A]): Map[A, Int] = map.groupMapReduce(identity)(_ => 1)(_ + _)
 }

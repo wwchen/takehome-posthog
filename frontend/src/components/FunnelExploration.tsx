@@ -1,53 +1,17 @@
-import { Button, Card, Col, Descriptions, Input, Popover, Radio, Row, Space, Tooltip } from 'antd'
-import { AxiosError } from 'axios'
-import { actions, events, kea, listeners, path, reducers, useActions, useValues } from 'kea'
-import { loaders } from 'kea-loaders'
+import { Button, Card, Col, Popover, Radio, Row, Space, Tooltip } from 'antd'
+import { useActions, useValues } from 'kea'
 
-import { AggEvent, api, NextStepItem } from 'lib/api'
-import { sum } from 'util/std'
+import { MoreOutlined, FilterOutlined } from '@ant-design/icons'
+import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
-import type { explorationLogicType } from './FunnelExplorationType'
-import { MoreOutlined, PushpinTwoTone } from '@ant-design/icons'
 
-export type StepKey = string
-export type Step = {
-  index: number
-  title: StepKey
-  totalCount: number
-  dropoffCount: number
-  nextSteps: NextStep[]
-}
-export type NextStep = Pick<Step, 'title' | 'totalCount'>
-export type FlowDb = Step[]
-export type Path = StepKey[]
-
-function emptyDb(): FlowDb {
-  return [
-    {
-      index: 0,
-      title: 'Root',
-      totalCount: 0,
-      dropoffCount: 0,
-      nextSteps: [],
-    },
-  ]
-}
-
-const isDropoff = (item: NextStepItem) => !item.event
-
-function toStep(item: NextStepItem): NextStep {
-  if (!item.event) {
-    throw new Error('cannot map drop off events to next step')
-  }
-  return {
-    title: item.event,
-    totalCount: item.count,
-  }
+export function FunnelStep(): JSX.Element {
+  return <></>
 }
 
 export function FunnelExploration(): JSX.Element {
-  const { setPath } = useActions(explorationLogic)
-  const { path, results } = useValues(explorationLogic)
+  const { setPath } = useActions(eventFunnelLogic)
+  const { path, results } = useValues(eventFunnelLogic)
 
   function onClick(item: NextStep, i: number) {
     setPath(path.slice(0, i).concat(item.title))
@@ -77,11 +41,40 @@ export function FunnelExploration(): JSX.Element {
                             <Button icon={<MoreOutlined />} />
                           </Popover>
                         </Tooltip>
+                        <Tooltip title="Filter">
+                          <Button icon={<FilterOutlined />} />
+                        </Tooltip>
                       </Space.Compact>
                     ))}
-                    <Radio.Button style={{ width: '100%' }} value="dropoff" disabled={true}>
-                      drop off({step.dropoffCount})
-                    </Radio.Button>
+                    {/* drop off */}
+                    <Space.Compact
+                      block
+                      direction="horizontal"
+                      style={{ width: '100%', verticalAlign: 'middle' }}
+                      size="middle"
+                    >
+                      <Radio.Button style={{ width: '100%' }} value="dropoff" disabled={true}>
+                        drop off({step.dropoffCount})
+                      </Radio.Button>
+                      <Tooltip title="Filter">
+                        <Button icon={<FilterOutlined />} />
+                      </Tooltip>
+                    </Space.Compact>
+                    {/* total */}
+                    <Space.Compact
+                      block
+                      direction="horizontal"
+                      style={{ width: '100%', verticalAlign: 'middle' }}
+                      size="middle"
+                    >
+                      <Radio.Button style={{ width: '100%' }} value="total" disabled={true}>
+                        total in step ({step.totalCount})
+                      </Radio.Button>
+                      <Tooltip title="Filter">
+                        <Button icon={<FilterOutlined />} />
+                      </Tooltip>
+                    </Space.Compact>
+                    {/* end */}
                   </Space>
                 </Radio.Group>
               </Card>
@@ -104,84 +97,3 @@ export function FunnelExploration(): JSX.Element {
     </>
   )
 }
-
-export const explorationLogic = kea<explorationLogicType>([
-  path(['src', 'components', 'FunnelExploration']),
-  actions({
-    setResults: (i: number, step: Step) => ({ i, step }),
-    // setDetails: (details: AggEvent[]) => ({ details }),
-  }),
-  loaders(({ actions, values }) => ({
-    path: [
-      [] as string[],
-      {
-        setPath: (path: string[]) => {
-          return path
-        },
-      },
-    ],
-    results: [
-      emptyDb(),
-      {
-        setResults: ({ i, step }) => {
-          return [...values.results.slice(0, i - 1), step]
-        },
-      },
-    ],
-    // details: [
-    //   [] as AggEvent[],
-    //   {
-    //     setDetails: ({ details }) => {
-    //       console.log("details set")
-    //       return details;
-    //     },
-    //   }
-    // ]
-  })),
-  listeners(({ actions, values }) => ({
-    setPath: async (path, breakpoint) => {
-      await breakpoint(300)
-      try {
-        const results: NextStepItem[] = await api.funnel.exploreNext(path)
-        const dropoffEvents = results.filter(isDropoff)
-        const nextEvents = results.filter((i) => !isDropoff(i))
-        const step: Step = {
-          index: path.length,
-          title: path.slice(-1)[0],
-          totalCount: sum(results.map((i) => i.count)),
-          dropoffCount: sum(dropoffEvents.map((i) => i.count)) || 0,
-          nextSteps: nextEvents.map(toStep),
-        }
-        actions.setResults(path.length + 1, step)
-        breakpoint()
-      } catch (e) {
-        actions.setResultsFailure('error getting funnel results', e)
-        console.warn('error getting funnel results', e)
-      }
-      // details
-      // try {
-      //   const results = await api.funnel.details(path)
-      //   actions.setDetails(results)
-      // } catch (e) {
-      //   actions.setResultsFailure('error getting funnel details', e)
-      //   console.warn('error getting funnel details', e)
-      // }
-    },
-  })),
-  events(({ props, values, actions }) => ({
-    afterMount: () => {
-      actions.setPath(values.path)
-    },
-  })),
-])
-
-/*
-distribution/impressionCount(event) -> {impressionCount: userCount}
-
-explore-funnel {path: []} -> {[nextPath]: count, _dropoff: count}
-
-funnel exploration step through
-- first event
-- possible next events
-- 
-*/

@@ -28,6 +28,7 @@ export function handleDates(body: any) {
 export type NextStepItem = {
   event?: string
   count: number
+  matchingUserIds: string[]
 }
 export type ExploreNextResponse = NextStepItem[]
 
@@ -100,6 +101,6 @@ export const api = {
   user: {
     async getAll(): Promise<GetUsersResponse> {
       return client.get('users').then((response) => response.data)
-    }
-  }
+    },
+  },
 }

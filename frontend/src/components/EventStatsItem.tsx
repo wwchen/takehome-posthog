@@ -1,7 +1,5 @@
-import { Card, Col, Descriptions, Form, List, Row, Space, Statistic, Tag, Timeline } from 'antd'
-import { actions, events, kea, listeners, path, reducers, useActions, useValues } from 'kea'
-import { loaders } from 'kea-loaders'
-import { api, EventStats } from 'lib/api'
+import { Card, Col, Descriptions, Row, Statistic, Tag, Timeline } from 'antd'
+import { EventStats } from 'lib/api'
 import { useState } from 'react'
 
 export interface EventStatsItemProps {

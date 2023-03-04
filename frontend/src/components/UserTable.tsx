@@ -1,10 +1,7 @@
 import { Card, Form, Radio, Spin, Table, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { connect, useActions, useValues } from 'kea'
+import { useActions, useValues } from 'kea'
 
-import { actions, kea, path, listeners } from 'kea'
-import { loaders } from 'kea-loaders'
-import { userLogic } from 'scenes/userLogic'
 import { EventTimeline } from './EventTimeline'
 
 import { User } from 'lib/api'
@@ -13,9 +10,6 @@ import { userTableLogic } from 'scenes/userTableLogic'
 export type FilterType = 'all-users' | 'filter-by-id' | 'anon-users' | 'authed-users'
 
 export function UserTable(): JSX.Element {
-  // const { loadUserEvents } = useActions(userLogic)
-  // const { users,  } = useValues(userLogic)
-
   const { setFilter, loadUserEvents } = useActions(userTableLogic)
   const { currentFilter, usersForSelectedFilter, userEvents } = useValues(userTableLogic)
 

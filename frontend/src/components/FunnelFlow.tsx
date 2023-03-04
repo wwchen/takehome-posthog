@@ -1,9 +1,6 @@
-import 'App.css'
-import 'components/UserList'
 import { useEffect, useState } from 'react'
 
 import { Sankey } from '@ant-design/plots'
-import 'antd/dist/reset.css'
 import { api } from 'lib/api'
 
 export function FunnelFlow() {

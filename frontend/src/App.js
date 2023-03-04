@@ -1,15 +1,8 @@
 import 'App.css'
-import axios from 'axios'
-import Funnel from 'components/Funnel'
-import User from 'components/User'
-import 'components/UserList'
-import { useEffect, useState } from 'react'
 
 import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
 import { FunnelFlow } from 'components/FunnelFlow'
-import { EventDetails } from 'components/EventDetails'
-import { Github } from 'components/Github'
 import { UserTable } from 'components/UserTable'
 
 function App() {

@@ -1,7 +1,7 @@
-import { Button, Card, Col, Popover, Radio, Row, Space, Tooltip } from 'antd'
+import { Button, Card, Col, Popover, Radio, Row, Space } from 'antd'
 import { useActions, useValues } from 'kea'
 
-import { MoreOutlined, FilterOutlined } from '@ant-design/icons'
+import { FilterOutlined, MoreOutlined } from '@ant-design/icons'
 import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
 import { FunnelStepButton } from './FunnelStepButton'

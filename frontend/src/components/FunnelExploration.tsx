@@ -6,9 +6,8 @@ import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
 import { FunnelStepButton } from './FunnelStepButton'
 
-
 export function FunnelExploration(): JSX.Element {
-  const { setPath } = useActions(eventFunnelLogic)
+  const { setPath, filterForUserIds } = useActions(eventFunnelLogic)
   const { path, results } = useValues(eventFunnelLogic)
 
   function onClick(item: NextStep, i: number) {
@@ -26,30 +25,40 @@ export function FunnelExploration(): JSX.Element {
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
                       <>
-                      <FunnelStepButton
-                        value={item}
-                        content={`${item.title} (${item.totalCount})`}
-                        button1Label="Event details"
-                        button1={
-                          <Popover trigger="hover" content={<EventDetails target={item.title} />}>
-                            <Button icon={<MoreOutlined />} />
-                          </Popover>}
-                        button2Label="Filter"
-                        button2={(<Button icon={<FilterOutlined />} />)} />
-                        </>
+                        <FunnelStepButton
+                          value={item}
+                          content={`${item.title} (${item.totalCount})`}
+                          button1Label="Event details"
+                          button1={
+                            <Popover trigger="hover" content={<EventDetails target={item.title} />}>
+                              <Button icon={<MoreOutlined />} />
+                            </Popover>
+                          }
+                          button2Label="Filter"
+                          button2={
+                            <Button onClick={() => filterForUserIds(item.matchingUserIds)} icon={<FilterOutlined />} />
+                          }
+                        />
+                      </>
                     ))}
                     <FunnelStepButton
-                      value='dropoff'
+                      value="dropoff"
                       content={`drop off (${step.dropoffCount})`}
                       disabled
-                      button1Label="Filter" 
-                      button1={(<Button icon={<FilterOutlined />} />)} />
+                      button1Label="Filter"
+                      button1={
+                        <Button onClick={() => filterForUserIds(step.dropoffUserIds)} icon={<FilterOutlined />} />
+                      }
+                    />
                     <FunnelStepButton
-                      value='total'
+                      value="total"
                       content={`Total in step (${step.totalCount})`}
                       disabled
-                      button1Label="Filter" 
-                      button1={(<Button icon={<FilterOutlined />} />)} />
+                      button1Label="Filter"
+                      button1={
+                        <Button onClick={() => filterForUserIds(step.matchingUserIds)} icon={<FilterOutlined />} />
+                      }
+                    />
                   </Space>
                 </Radio.Group>
               </Card>

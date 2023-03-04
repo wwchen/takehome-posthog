@@ -51,7 +51,7 @@ export const eventFunnelLogic = kea<eventFunnelLogicType>([
   path(['src', 'scenes', 'eventFunnelLogic']),
   actions({
     setResults: (i: number, step: Step) => ({ i, step }),
-    // setDetails: (details: AggEvent[]) => ({ details }),
+    filterForUserIds: (whitelistUserIds: string[]) => ({ whitelistUserIds }),
   }),
   loaders(({ actions, values }) => ({
     path: [
@@ -70,15 +70,15 @@ export const eventFunnelLogic = kea<eventFunnelLogicType>([
         },
       },
     ],
-    // details: [
-    //   [] as AggEvent[],
-    //   {
-    //     setDetails: ({ details }) => {
-    //       console.log("details set")
-    //       return details;
-    //     },
-    //   }
-    // ]
+    whitelistUserIds: [
+      [] as string[],
+      {
+        filterForUserIds: ({ whitelistUserIds }) => {
+          console.log(`filtering for ${whitelistUserIds.length}`)
+          return whitelistUserIds
+        },
+      },
+    ],
   })),
   listeners(({ actions, values }) => ({
     setPath: async (path, breakpoint) => {
@@ -102,14 +102,6 @@ export const eventFunnelLogic = kea<eventFunnelLogicType>([
         actions.setResultsFailure('error getting funnel results', e)
         console.warn('error getting funnel results', e)
       }
-      // details
-      // try {
-      //   const results = await api.funnel.details(path)
-      //   actions.setDetails(results)
-      // } catch (e) {
-      //   actions.setResultsFailure('error getting funnel details', e)
-      //   console.warn('error getting funnel details', e)
-      // }
     },
   })),
   events(({ props, values, actions }) => ({

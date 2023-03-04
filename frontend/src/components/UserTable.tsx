@@ -53,7 +53,7 @@ export function UserTable(): JSX.Element {
         <Form layout="inline">
           <Form.Item label="Users">
             <Radio.Group
-              defaultValue="all-users"
+              value={currentFilter}
               onChange={(e) => {
                 setFilter(e.target.value)
               }}
@@ -65,6 +65,10 @@ export function UserTable(): JSX.Element {
             </Radio.Group>
           </Form.Item>
         </Form>
+        <br />
+        <p style={{ textAlign: 'left' }}>
+          Showing <strong>{usersForSelectedFilter.length}</strong> users
+        </p>
         <br />
         <Table<User>
           bordered

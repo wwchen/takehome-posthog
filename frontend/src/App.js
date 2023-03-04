@@ -67,11 +67,9 @@ function App() {
   return (
     <>
       <div className="App">
-        <UserTable />
-
-        <h2>Funnel</h2>
-        <FunnelExploration />
         <FunnelFlow />
+        <FunnelExploration />
+        <UserTable />
         {/* <EventDetails /> */}
         {/* <Github /> */}
         {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel> */}

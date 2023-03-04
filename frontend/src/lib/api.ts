@@ -73,7 +73,7 @@ export type User = {
   email?: string
   lastSeenAt: Date
   isAnon: Boolean
-  events: Event[]
+  associatedEventProperties: Record<string, string>
 }
 export type GetUsersResponse = User[]
 
@@ -92,6 +92,9 @@ export const api = {
   event: {
     async stats(): Promise<EventStatsResponse> {
       return client.get('event/stats').then((response) => response.data)
+    },
+    async userEvent(userId: string): Promise<Event[]> {
+      return client.get(`user/${userId}/events`).then((response) => response.data)
     },
   },
   user: {

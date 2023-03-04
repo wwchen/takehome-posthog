@@ -11,7 +11,7 @@ export type FilterType = 'all-users' | 'filter-by-id' | 'anon-users' | 'authed-u
 
 export function UserTable(): JSX.Element {
   const { setFilter, loadUserEvents } = useActions(userTableLogic)
-  const { currentFilter, usersForSelectedFilter, userEvents, path } = useValues(userTableLogic)
+  const { currentFilter, usersForSelectedFilter, userEvents, filterDescription } = useValues(userTableLogic)
 
   const columns: ColumnsType<User> = [
     {
@@ -62,9 +62,9 @@ export function UserTable(): JSX.Element {
         <p style={{ textAlign: 'left' }}>
           Showing <strong>{usersForSelectedFilter.length}</strong> users
         </p>
-        {currentFilter === 'filter-by-id' && path && (
+        {currentFilter === 'filter-by-id' && filterDescription && (
           <p style={{ textAlign: 'left' }}>
-            <strong>Funnel path</strong>: {path.join(" > ")}
+            <strong>Funnel path</strong>: {filterDescription}
           </p>
         )}
         <br />
@@ -77,11 +77,7 @@ export function UserTable(): JSX.Element {
           expandable={{
             expandedRowRender: (record) => {
               loadUserEvents(record.id)
-              return userEvents[record.id] ? (
-                <EventTimeline events={userEvents[record.id]} />
-              ) : (
-                <Spin />
-              )
+              return userEvents[record.id] ? <EventTimeline events={userEvents[record.id]} /> : <Spin />
             },
             rowExpandable: (record) => true,
           }}

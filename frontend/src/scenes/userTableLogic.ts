@@ -10,12 +10,11 @@ export const userTableLogic = kea<userTableLogicType>([
   path(['src', 'scenes', 'userTableLogic']),
   connect({
     actions: [userLogic, ['loadUserEvents'], eventFunnelLogic, ['filterForUserIds']],
-    values: [userLogic, ['users', 'userEvents'], eventFunnelLogic, ['path', 'whitelistUserIds']],
+    values: [userLogic, ['users', 'userEvents'], eventFunnelLogic, ['path', 'filterDescription', 'whitelistUserIds']],
   }),
   actions({
     setFilter: (filterType: FilterType) => ({ filterType }),
   }),
-
   reducers(({ actions, values }) => ({
     currentFilter: [
       'all-users' as FilterType,

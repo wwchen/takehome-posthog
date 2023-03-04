@@ -1,7 +1,7 @@
 import { Button, Card, Col, Popover, Radio, Row, Space } from 'antd'
 import { useActions, useValues } from 'kea'
 
-import { FilterOutlined, MoreOutlined } from '@ant-design/icons'
+import { MoreOutlined } from '@ant-design/icons'
 import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
 import { FunnelStepButton } from './FunnelStepButton'
@@ -26,38 +26,32 @@ export function FunnelExploration(): JSX.Element {
                     {step.nextSteps.map((item) => (
                       <>
                         <FunnelStepButton
+                          stepKey={[...results.slice(1, i + 1).map((s) => s.title), item.title].join(' > ')}
                           value={item}
                           content={`${item.title} (${item.totalCount})`}
-                          button1Label="Event details"
+                          button1Label="Event summary details"
                           button1={
                             <Popover trigger="hover" content={<EventDetails target={item.title} />}>
                               <Button icon={<MoreOutlined />} />
                             </Popover>
                           }
-                          button2Label="Filter"
-                          button2={
-                            <Button onClick={() => filterForUserIds(item.matchingUserIds)} icon={<FilterOutlined />} />
-                          }
+                          onFilterClick={(_, key) => filterForUserIds(key.toString(), item.matchingUserIds)}
                         />
                       </>
                     ))}
                     <FunnelStepButton
+                      stepKey={[...results.slice(1, i + 1).map((s) => s.title), 'drop off'].join(' > ')}
                       value="dropoff"
                       content={`drop off (${step.dropoffCount})`}
                       disabled
-                      button1Label="Filter"
-                      button1={
-                        <Button onClick={() => filterForUserIds(step.dropoffUserIds)} icon={<FilterOutlined />} />
-                      }
+                      onFilterClick={(_, key) => filterForUserIds(key.toString(), step.dropoffUserIds)}
                     />
                     <FunnelStepButton
+                      stepKey={[...results.slice(1, i + 1).map((s) => s.title), 'total'].join(' > ')}
                       value="total"
                       content={`Total in step (${step.totalCount})`}
                       disabled
-                      button1Label="Filter"
-                      button1={
-                        <Button onClick={() => filterForUserIds(step.matchingUserIds)} icon={<FilterOutlined />} />
-                      }
+                      onFilterClick={(_, key) => filterForUserIds(key.toString(), step.matchingUserIds)}
                     />
                   </Space>
                 </Radio.Group>

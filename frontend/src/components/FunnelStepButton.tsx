@@ -1,13 +1,18 @@
-import { Radio, Space, Tooltip } from 'antd'
+import { FilterOutlined } from '@ant-design/icons'
+import { Button, Radio, Space, Tooltip } from 'antd'
+import React from 'react'
 
 export interface FunnelStepButtonProps {
+  stepKey: React.Key
   content: string
   value: any
   disabled?: boolean
   button1Label?: string
   button1?: JSX.Element
-  button2Label?: string
-  button2?: JSX.Element
+  onFilterClick: (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent> | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    key: React.Key
+  ) => any
 }
 
 export function FunnelStepButton(props: FunnelStepButtonProps): JSX.Element {
@@ -18,7 +23,13 @@ export function FunnelStepButton(props: FunnelStepButtonProps): JSX.Element {
           {props.content}
         </Radio.Button>
         {props.button1 && <Tooltip title={props.button1Label}>{props.button1}</Tooltip>}
-        {props.button2 && <Tooltip title={props.button2Label}>{props.button2}</Tooltip>}
+        <Tooltip title="Filter for users in this funnel path">
+          <Button
+            key={props.stepKey}
+            onClick={(e) => props.onFilterClick(e, props.stepKey)}
+            icon={<FilterOutlined />}
+          />
+        </Tooltip>
       </Space.Compact>
     </>
   )

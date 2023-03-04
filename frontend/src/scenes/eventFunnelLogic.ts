@@ -1,4 +1,4 @@
-import { actions, events, kea, listeners, path } from 'kea'
+import { actions, events, kea, listeners, path, reducers } from 'kea'
 import { loaders } from 'kea-loaders'
 
 import { api, NextStepItem } from 'lib/api'
@@ -51,7 +51,10 @@ export const eventFunnelLogic = kea<eventFunnelLogicType>([
   path(['src', 'scenes', 'eventFunnelLogic']),
   actions({
     setResults: (i: number, step: Step) => ({ i, step }),
-    filterForUserIds: (whitelistUserIds: string[]) => ({ whitelistUserIds }),
+    filterForUserIds: (filterDescription: string, whitelistUserIds: string[]) => ({
+      filterDescription,
+      whitelistUserIds,
+    }),
   }),
   loaders(({ actions, values }) => ({
     path: [
@@ -73,10 +76,18 @@ export const eventFunnelLogic = kea<eventFunnelLogicType>([
     whitelistUserIds: [
       [] as string[],
       {
-        filterForUserIds: ({ whitelistUserIds }) => {
-          console.log(`filtering for ${whitelistUserIds.length}`)
+        filterForUserIds: ({ filterDescription, whitelistUserIds }) => {
+          console.log(`filtering for ${whitelistUserIds.length}: ${filterDescription}`)
           return whitelistUserIds
         },
+      },
+    ],
+  })),
+  reducers(({ actions, values }) => ({
+    filterDescription: [
+      '' as string,
+      {
+        filterForUserIds: (_, { filterDescription }) => filterDescription,
       },
     ],
   })),

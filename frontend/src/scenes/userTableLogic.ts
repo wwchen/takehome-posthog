@@ -10,7 +10,7 @@ export const userTableLogic = kea<userTableLogicType>([
   path(['src', 'scenes', 'userTableLogic']),
   connect({
     actions: [userLogic, ['loadUserEvents'], eventFunnelLogic, ['filterForUserIds']],
-    values: [userLogic, ['users', 'userEvents'], eventFunnelLogic, ['whitelistUserIds']],
+    values: [userLogic, ['users', 'userEvents'], eventFunnelLogic, ['path', 'whitelistUserIds']],
   }),
   actions({
     setFilter: (filterType: FilterType) => ({ filterType }),
@@ -28,7 +28,6 @@ export const userTableLogic = kea<userTableLogicType>([
     usersForSelectedFilter: [
       (s) => [s.currentFilter, s.users, eventFunnelLogic.selectors.whitelistUserIds],
       (filterType, users, whitelistUserIds) => {
-        console.log('selector caleld')
         switch (filterType) {
           case 'all-users':
             return users

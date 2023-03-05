@@ -35,7 +35,7 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
                 mode="left"
                 items={[
                   {
-                    label: 'Most preceded event (${stats.mostPrecededBy.count})',
+                    label: `Most preceded event (${stats.mostPrecededBy.count})`,
                     children: `${stats.mostPrecededBy.item}`,
                   },
                   {
@@ -43,7 +43,7 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
                     children: `${stats.event}`,
                   },
                   {
-                    label: 'Most succeeded event (${stats.mostFollowedBy.count})',
+                    label: `Most succeeded event (${stats.mostFollowedBy.count})`,
                     children: `${stats.mostFollowedBy.item}`,
                   },
                 ]}

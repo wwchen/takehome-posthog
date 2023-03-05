@@ -1,7 +1,7 @@
-import { Button, Card, Col, Popover, Radio, Row, Space } from 'antd'
+import { Button, Card, Col, Popover, Radio, Row, Select, Space } from 'antd'
 import { useActions, useValues } from 'kea'
 
-import { MoreOutlined } from '@ant-design/icons'
+import { MoreOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
 import { EventDetails } from './EventDetails'
 import { FunnelStepButton } from './FunnelStepButton'
@@ -10,18 +10,84 @@ export function FunnelExploration(): JSX.Element {
   const { setPath, filterForUserIds } = useActions(eventFunnelLogic)
   const { path, results } = useValues(eventFunnelLogic)
 
-  function onClick(item: NextStep, i: number) {
-    setPath(path.slice(0, i).concat(item.title))
+  function onSelect(stepIndex: number, optionValue?: string) {
+    const isClear = !optionValue
+    const isNextStep = !!optionValue && optionValue !== 'dropoff'
+    const isDropOff = optionValue && optionValue === 'dropoff'
+
+    const currPath = path.slice(0, stepIndex)
+    const step = results[stepIndex]
+
+    if (isClear) {
+      const pathStr = currPath.join(' > ')
+      filterForUserIds(pathStr, step.matchingUserIds)
+      setPath(currPath)
+    } else if (isNextStep) {
+      const nextPath = currPath.concat(optionValue)
+      const pathStr = nextPath.join(' > ')
+      const nextStepIndex = step.nextSteps.map((s) => s.title).indexOf(optionValue)
+      filterForUserIds(pathStr, step.nextSteps[nextStepIndex].matchingUserIds)
+      setPath(nextPath)
+    } else if (isDropOff) {
+      const pathStr = currPath.concat(optionValue).join(' > ')
+      filterForUserIds(pathStr, step.dropoffUserIds)
+      setPath(currPath)
+    }
   }
 
   return (
     <>
-      <Row>
+      <Card title="Event walkthrough">
+        <h3>Choose your own adventure</h3>
+        {results.map((step, i) => (
+          <>
+            ({step.totalCount} users) <br />
+            <ArrowDownOutlined /> <br />
+            <Select
+              defaultValue={'Select'}
+              value={path[i]}
+              // defaultOpen={true}
+              allowClear={true}
+              style={{ width: '20em' }}
+              key={`${step.title}:${i}:${results.length}`}
+              onSelect={(title) => onSelect(i, title)}
+              onClear={() => onSelect(i)}
+              options={[
+                ...step.nextSteps.map((nextStep) => ({
+                  value: nextStep.title,
+                  label:
+                    i == results.length - 1 || path[i] !== nextStep.title
+                      ? `${nextStep.title} (${nextStep.totalCount} users left)`
+                      : nextStep.title,
+                })),
+                ...(step.dropoffCount
+                  ? [
+                      {
+                        value: 'dropoff',
+                        label: `droped off (${step.dropoffCount} users left)`,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            {i < results.length - 1 && (
+              <>
+                <br />
+                <ArrowDownOutlined />
+                <br />
+              </>
+            )}
+          </>
+        ))}
+      </Card>
+
+      {/* v1 flow, less inutitive */}
+      {/* <Row>
         {results.map((step, i) => {
           return (
             <Col key={i}>
               <Card title={`Step ${i + 1}`}>
-                <Radio.Group onChange={(e) => onClick(e.target.value, i)} buttonStyle="outline">
+                <Radio.Group onChange={(e) => onClick(i, e.target.value)} buttonStyle="outline">
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
                       <>
@@ -59,18 +125,6 @@ export function FunnelExploration(): JSX.Element {
             </Col>
           )
         })}
-      </Row>
-      {/* <Row>
-        <Col>
-          {details.map(detail => (
-            <Descriptions title="Details" bordered size="default" column={1}>
-              <Descriptions.Item label="Event name">{detail.event}</Descriptions.Item>
-              <Descriptions.Item label="Last fired at">{detail.lastFired.toLocaleString()}</Descriptions.Item>
-              <Descriptions.Item label="Properties"><EventProperty options={detail.properties} /></Descriptions.Item>
-            </Descriptions>
-          ))}
-          
-        </Col>
       </Row> */}
     </>
   )

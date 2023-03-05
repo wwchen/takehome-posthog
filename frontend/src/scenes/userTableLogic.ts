@@ -16,7 +16,7 @@ export const userTableLogic = kea<userTableLogicType>([
   actions({
     setFilter: (filterType: FilterType) => ({ filterType }),
     loadPropertyCounts: () => ({}),
-    setPropertyOptions: (propertyOptions: Record<string, string[]>) => ({propertyOptions})
+    setPropertyOptions: (propertyOptions: Record<string, string[]>) => ({ propertyOptions }),
   }),
   reducers(({ actions, values }) => ({
     currentFilter: [
@@ -28,9 +28,9 @@ export const userTableLogic = kea<userTableLogicType>([
     propertyOptions: [
       {} as Record<string, string[]>,
       {
-        setPropertyOptions: (_, { propertyOptions }) => propertyOptions
-      }
-    ]
+        setPropertyOptions: (_, { propertyOptions }) => propertyOptions,
+      },
+    ],
   })),
   selectors({
     usersForSelectedFilter: [
@@ -55,7 +55,7 @@ export const userTableLogic = kea<userTableLogicType>([
     },
     loadPropertyCounts: async (_, breakpoint) => {
       const counts = await api.event.propertyCounts()
-      const options = Object.entries(counts).reduce(((acc, [k, v]) => ({...acc, [k]: Object.keys(v)})), {})
+      const options = Object.entries(counts).reduce((acc, [k, v]) => ({ ...acc, [k]: Object.keys(v) }), {})
       actions.setPropertyOptions(options)
     },
   })),

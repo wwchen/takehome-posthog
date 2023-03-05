@@ -11,10 +11,11 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <Card title={`Event details for: '${stats.event}'`} style={{ width: '60em' }}>
+      {/* <Card title={`Event details for: '${stats.event}'`} style={{ maxWidth: '60em' }}> */}
+      <Card>
         <Row>
           {/* top left card */}
-          <Col span={12}>
+          <Col span={24}>
             <Card title="Statistics" style={{ height: '100%' }} type="inner">
               <Row gutter={[14, 14]}>
                 <Col span={12}>
@@ -30,19 +31,25 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
             </Card>
           </Col>
           {/* top right card */}
-          <Col span={12}>
+          <Col span={24}>
             <Card title="Context" type="inner">
-              <Timeline mode="left">
-                <Timeline.Item label="Most preceded event">
-                  {stats.mostPrecededBy.item} ({stats.mostPrecededBy.count})
-                </Timeline.Item>
-                <Timeline.Item label="(This event)" color="green">
-                  {stats.event}
-                </Timeline.Item>
-                <Timeline.Item label="Most followed event">
-                  {stats.mostFollowedBy.item} ({stats.mostFollowedBy.count})
-                </Timeline.Item>
-              </Timeline>
+              <Timeline
+                mode="left"
+                items={[
+                  {
+                    label: 'Most preceded event',
+                    children: `${stats.mostPrecededBy.item} (${stats.mostPrecededBy.count})`,
+                  },
+                  {
+                    label: '(This event)',
+                    children: `${stats.event})`,
+                  },
+                  {
+                    label: 'Most followed event',
+                    children: `${stats.mostFollowedBy.item} (${stats.mostFollowedBy.count})`,
+                  },
+                ]}
+              />
             </Card>
           </Col>
           <Col span={24}>

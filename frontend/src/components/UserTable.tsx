@@ -11,9 +11,10 @@ export type FilterType = 'all-users' | 'filter-by-id' | 'anon-users' | 'authed-u
 
 export function UserTable(): JSX.Element {
   const { setFilter, loadUserEvents } = useActions(userTableLogic)
-  const { currentFilter, usersForSelectedFilter, userEvents, filterDescription, propertyOptions } = useValues(userTableLogic)
+  const { currentFilter, usersForSelectedFilter, userEvents, filterDescription, propertyOptions } =
+    useValues(userTableLogic)
 
-  const stringToFilter = (value: string) => ({text: value, value: value})
+  const stringToFilter = (value: string) => ({ text: value, value: value })
 
   const columns: ColumnsType<User> = [
     {
@@ -38,10 +39,10 @@ export function UserTable(): JSX.Element {
       },
       filters: Object.entries(propertyOptions).map(([k, v]) => ({
         ...stringToFilter(k),
-        children: v.map(stringToFilter)
+        children: v.map(stringToFilter),
       })),
       filterMode: 'tree',
-      onFilter: (value, record) => (Object.values(record.associatedEventProperties).indexOf(value as string) >= 0),
+      onFilter: (value, record) => Object.values(record.associatedEventProperties).indexOf(value as string) >= 0,
     },
   ]
 
@@ -82,7 +83,7 @@ export function UserTable(): JSX.Element {
           expandable={{
             expandedRowRender: (record) => {
               loadUserEvents(record.id)
-              return userEvents[record.id] ? <EventTimeline events={userEvents[record.id]} /> : <Spin />
+              return userEvents[record.id] ? <EventTimeline key={record.id} events={userEvents[record.id]} /> : <Spin />
             },
             rowExpandable: (record) => true,
           }}

@@ -4,6 +4,8 @@ import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
 import { FunnelFlow } from 'components/FunnelFlow'
 import { UserTable } from 'components/UserTable'
+import { Row, Col } from 'antd'
+import { EventDetails } from 'components/EventDetails'
 
 function App() {
   // const [funnelPath, setFunnelPath] = useState(['x'])
@@ -61,8 +63,18 @@ function App() {
     <>
       <div className="App">
         <FunnelFlow />
-        <FunnelExploration />
-        <UserTable />
+        <Row gutter={[10, 10]}>
+          <Col flex="1">
+            <FunnelExploration />
+          </Col>
+          <Col flex="3">
+            <UserTable />
+          </Col>
+          <Col flex="2">
+            <EventDetails />
+          </Col>
+        </Row>
+
         {/* <EventDetails /> */}
         {/* <Github /> */}
         {/* <Funnel funnelPath={funnelPath} funnelEvents={funnelEvents} handleFunnelClick={handleFunnelClick}></Funnel> */}

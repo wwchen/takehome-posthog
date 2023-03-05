@@ -11,12 +11,13 @@ export type FilterType = 'all-users' | 'filter-by-id' | 'anon-users' | 'authed-u
 
 export function UserTable(): JSX.Element {
   const { setFilter, loadUserEvents } = useActions(userTableLogic)
-  const { currentFilter, usersForSelectedFilter, userEvents, filterDescription } = useValues(userTableLogic)
+  const { currentFilter, usersForSelectedFilter, userEvents, filterDescription, propertyOptions } = useValues(userTableLogic)
+
+  const stringToFilter = (value: string) => ({text: value, value: value})
 
   const columns: ColumnsType<User> = [
     {
       title: 'User ID',
-      dataIndex: 'isAnon',
       render: (value, record, i) => (record.isAnon ? record.id : record.email),
       filters: [
         { text: 'Logged in', value: false },
@@ -27,16 +28,20 @@ export function UserTable(): JSX.Element {
     },
     {
       title: 'Last seen at',
-      dataIndex: 'lastSeenAt',
       render: (value, record, i) => record.lastSeenAt?.toLocaleString('en-US'),
       sorter: (a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime(),
     },
     {
       title: 'Properties',
-      dataIndex: 'associatedEventProperties',
       render: (value, record, i) => {
         return Object.entries(record.associatedEventProperties).map((kv) => <Tag>{kv.join(': ')}</Tag>)
       },
+      filters: Object.entries(propertyOptions).map(([k, v]) => ({
+        ...stringToFilter(k),
+        children: v.map(stringToFilter)
+      })),
+      filterMode: 'tree',
+      onFilter: (value, record) => (Object.values(record.associatedEventProperties).indexOf(value as string) >= 0),
     },
   ]
 

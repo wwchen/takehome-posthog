@@ -20,8 +20,8 @@ export function FunnelExploration(): JSX.Element {
         {results.map((step, i) => {
           return (
             <Col key={i}>
-              <Card title={`Step ${i + 1} (${step.totalCount})`}>
-                <Radio.Group onChange={(e) => onClick(e.target.value, i)} buttonStyle="solid">
+              <Card title={`Step ${i + 1}`}>
+                <Radio.Group onChange={(e) => onClick(e.target.value, i)} buttonStyle="outline">
                   <Space direction="vertical">
                     {step.nextSteps.map((item) => (
                       <>
@@ -31,7 +31,7 @@ export function FunnelExploration(): JSX.Element {
                           content={`${item.title} (${item.totalCount})`}
                           button1Label="Event summary details"
                           button1={
-                            <Popover trigger="hover" content={<EventDetails target={item.title} />}>
+                            <Popover trigger="click" content={<EventDetails target={item.title} />}>
                               <Button icon={<MoreOutlined />} />
                             </Popover>
                           }
@@ -42,14 +42,14 @@ export function FunnelExploration(): JSX.Element {
                     <FunnelStepButton
                       stepKey={[...results.slice(1, i + 1).map((s) => s.title), 'drop off'].join(' > ')}
                       value="dropoff"
-                      content={`drop off (${step.dropoffCount})`}
+                      content={`Drop off (${step.dropoffCount})`}
                       disabled
                       onFilterClick={(_, key) => filterForUserIds(key.toString(), step.dropoffUserIds)}
                     />
                     <FunnelStepButton
                       stepKey={[...results.slice(1, i + 1).map((s) => s.title), 'total'].join(' > ')}
                       value="total"
-                      content={`Total in step (${step.totalCount})`}
+                      content={`Total users in this step (${step.totalCount})`}
                       disabled
                       onFilterClick={(_, key) => filterForUserIds(key.toString(), step.matchingUserIds)}
                     />

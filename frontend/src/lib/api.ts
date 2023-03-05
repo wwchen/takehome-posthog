@@ -78,6 +78,8 @@ export type User = {
 }
 export type GetUsersResponse = User[]
 
+export type EventPropertyCountsResponse = Record<string, Record<string, number>>
+
 export const api = {
   funnel: {
     async exploreNext(path: string[]): Promise<ExploreNextResponse> {
@@ -96,6 +98,9 @@ export const api = {
     },
     async userEvent(userId: string): Promise<Event[]> {
       return client.get(`user/${userId}/events`).then((response) => response.data)
+    },
+    async propertyCounts(): Promise<EventPropertyCountsResponse> {
+      return client.get(`event-properties`).then((response) => response.data)
     },
   },
   user: {

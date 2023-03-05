@@ -62,7 +62,7 @@ export function FunnelExploration(): JSX.Element {
                   ? [
                       {
                         value: 'dropoff',
-                        label: `droped off (${step.dropoffCount} users left)`,
+                        label: `dropped off (${step.dropoffCount} users left)`,
                       },
                     ]
                   : []),

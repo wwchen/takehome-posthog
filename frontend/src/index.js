@@ -1,7 +1,9 @@
+import App from 'App'
+import 'index.css'
+import posthog from 'posthog-js'
+import { PostHogProvider } from 'posthog-js/react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import 'index.css'
-import App from 'App'
 import reportWebVitals from 'reportWebVitals'
 
 posthog.init('phc_725k4zwsH7Fbjjx6dYjPSe7uFgmg1uCuth5UbSTycRL', { api_host: 'https://app.posthog.com' })

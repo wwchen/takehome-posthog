@@ -138,11 +138,7 @@ export interface userTableLogicType extends Logic {
   _isKea: true
   _isKeaWithKey: false
   __keaTypeGenInternalSelectorTypes: {
-    usersForSelectedFilter: (
-      currentFilter: FilterType,
-      users: User[],
-      whitelistUserIds: string[]
-    ) => User[]
+    usersForSelectedFilter: (currentFilter: FilterType, users: User[], whitelistUserIds: string[]) => User[]
   }
   __keaTypeGenInternalReducerActions: {
     'filter for user ids (src.scenes.eventFunnelLogic)': (

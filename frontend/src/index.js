@@ -4,10 +4,14 @@ import 'index.css'
 import App from 'App'
 import reportWebVitals from 'reportWebVitals'
 
+posthog.init('phc_725k4zwsH7Fbjjx6dYjPSe7uFgmg1uCuth5UbSTycRL', { api_host: 'https://app.posthog.com' })
+
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
-    <App />
+    <PostHogProvider client={posthog}>
+      <App />
+    </PostHogProvider>
   </React.StrictMode>
 )
 

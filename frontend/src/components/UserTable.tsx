@@ -19,23 +19,31 @@ export function UserTable(): JSX.Element {
   const columns: ColumnsType<User> = [
     {
       title: 'User ID',
+      dataIndex: 'id',
       render: (value, record, i) => (record.isAnon ? record.id : record.email),
       filters: [
         { text: 'Logged in', value: false },
         { text: 'Anonymous user', value: true },
       ],
-      onFilter: (value, record) => record.isAnon === value,
+      onFilter: (value, record) => {
+        console.log('onfillter')
+        return record.isAnon === value
+      },
       width: '25em',
     },
     {
       title: 'Last seen at',
+      dataIndex: 'lastSeen',
       render: (value, record, i) => record.lastSeenAt?.toLocaleString('en-US'),
       sorter: (a, b) => a.lastSeenAt.getTime() - b.lastSeenAt.getTime(),
     },
     {
       title: 'Properties',
+      dataIndex: 'properties',
       render: (value, record, i) => {
-        return Object.entries(record.associatedEventProperties).map((kv) => <Tag>{kv.join(': ')}</Tag>)
+        return Object.entries(record.associatedEventProperties).map((kv, ii) => (
+          <Tag key={`${i}-${ii}`}>{kv.join(': ')}</Tag>
+        ))
       },
       filters: Object.entries(propertyOptions).map(([k, v]) => ({
         ...stringToFilter(k),

@@ -62,7 +62,6 @@ function App() {
   return (
     <>
       <div className="App">
-        <FunnelFlow />
         <Row gutter={[10, 10]}>
           <Col flex="1">
             <FunnelExploration />
@@ -72,6 +71,11 @@ function App() {
           </Col>
           <Col flex="2">
             <EventDetails />
+          </Col>
+        </Row>
+        <Row>
+          <Col flex="1">
+            <FunnelFlow />
           </Col>
         </Row>
 

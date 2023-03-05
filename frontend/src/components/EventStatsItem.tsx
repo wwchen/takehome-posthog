@@ -42,7 +42,7 @@ export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
                   },
                   {
                     label: '(This event)',
-                    children: `${stats.event})`,
+                    children: `${stats.event}`,
                   },
                   {
                     label: 'Most followed event',

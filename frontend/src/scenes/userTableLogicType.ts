@@ -140,7 +140,7 @@ export interface userTableLogicType extends Logic {
   __keaTypeGenInternalSelectorTypes: {
     usersForSelectedFilter: (
       currentFilter: FilterType,
-      users: import('/Users/will.chen/Downloads/posthog-interview-2023-02-22-william/frontend/src/lib/api').User[],
+      users: User[],
       whitelistUserIds: string[]
     ) => User[]
   }

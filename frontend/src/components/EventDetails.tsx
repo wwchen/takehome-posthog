@@ -12,7 +12,7 @@ export function EventDetails(props: EventDetailsProps): JSX.Element {
   const { stats, selectedEvent } = useValues(eventDetailsLogic)
 
   const activeEventName = props.target || selectedEvent
-  const targetedEvent = stats.filter((s) => s.event === activeEventName).at(0)
+  // const targetedEvent = stats.filter((s) => s.event === activeEventName).at(0)
   // const events = targetedEvent ? [targetedEvent] : stats
   const events = stats
   return (

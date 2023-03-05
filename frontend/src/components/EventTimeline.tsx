@@ -1,5 +1,5 @@
 import { Card, Timeline } from 'antd'
-import { api, User, Event } from 'lib/api'
+import { Event } from 'lib/api'
 
 export interface EventTimelineProps {
   events: Event[]

@@ -1,10 +1,8 @@
-import { Button, Card, Col, Popover, Radio, Row, Select, Space } from 'antd'
+import { Card, Select } from 'antd'
 import { useActions, useValues } from 'kea'
 
-import { MoreOutlined, ArrowDownOutlined } from '@ant-design/icons'
-import { eventFunnelLogic, NextStep } from 'scenes/eventFunnelLogic'
-import { EventDetails } from './EventDetails'
-import { FunnelStepButton } from './FunnelStepButton'
+import { ArrowDownOutlined } from '@ant-design/icons'
+import { eventFunnelLogic } from 'scenes/eventFunnelLogic'
 
 export function FunnelExploration(): JSX.Element {
   const { setPath, filterForUserIds } = useActions(eventFunnelLogic)
@@ -56,7 +54,7 @@ export function FunnelExploration(): JSX.Element {
                 ...step.nextSteps.map((nextStep) => ({
                   value: nextStep.title,
                   label:
-                    i == results.length - 1 || path[i] !== nextStep.title
+                    i === results.length - 1 || path[i] !== nextStep.title
                       ? `${nextStep.title} (${nextStep.totalCount} users left)`
                       : nextStep.title,
                 })),

@@ -1,9 +1,9 @@
-import { actions, connect, reducers, events, kea, listeners, path } from 'kea'
+import { actions, connect, events, kea, listeners, path, reducers } from 'kea'
 import { loaders } from 'kea-loaders'
 import { api, EventStats } from 'lib/api'
 
 import type { eventDetailsLogicType } from './eventDetailsLogicType'
-import { Step, eventFunnelLogic } from './eventFunnelLogic'
+import { eventFunnelLogic } from './eventFunnelLogic'
 
 export const eventDetailsLogic = kea<eventDetailsLogicType>([
   path(['src', 'components', 'EventDetails']),

@@ -1,6 +1,5 @@
 import { Card, Col, Descriptions, Row, Statistic, Tag, Timeline } from 'antd'
 import { EventStats } from 'lib/api'
-import { useState } from 'react'
 
 export interface EventStatsItemProps {
   stats: EventStats
@@ -8,7 +7,6 @@ export interface EventStatsItemProps {
 
 export function EventStatsItem(props: EventStatsItemProps): JSX.Element {
   const { stats } = props
-  const [open, setOpen] = useState(false)
   return (
     <>
       {/* <Card title={`Event details for: '${stats.event}'`} style={{ maxWidth: '60em' }}> */}

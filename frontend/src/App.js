@@ -4,64 +4,35 @@ import 'antd/dist/reset.css'
 import { FunnelExploration } from 'components/FunnelExploration'
 import { FunnelFlow } from 'components/FunnelFlow'
 import { UserTable } from 'components/UserTable'
-import { Row, Col } from 'antd'
+import { Row, Col, Alert } from 'antd'
 import { EventDetails } from 'components/EventDetails'
+import { useState, useEffect } from 'react'
 
 function App() {
-  // const [funnelPath, setFunnelPath] = useState(['x'])
-  // const [funnelEvents, setFunnelEvents] = useState({})
+  const [width, setWidth] = useState(window.innerWidth)
 
-  // const [userData, setUserData] = useState([])
-  // const [userEvents, setUserEvents] = useState({})
-  // const [userProps, setUserProps] = useState({})
-  // const [currUserId, setCurrUserId] = useState('')
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth)
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange)
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange)
+    }
+  }, [])
 
-  // const [eventProperties, setEventProperties] = useState({})
-
-  // const client = axios.create({
-  //   baseURL: 'http://localhost:8080',
-  //   headers: { 'Access-Control-Allow-Origin': '*' },
-  // })
-
-  // useEffect(() => {
-  //   client.get('/users').then((response) => {
-  //     console.log('fetched users')
-  //     setUserData(response.data)
-  //   })
-
-  //   // handleFunnelClick(funnelPath)
-  // }, [])
-
-  // useEffect(() => {
-  //   client.get('/event-properties').then((response) => {
-  //     console.log('fetched event properties')
-  //     setEventProperties(response.data)
-  //   })
-  // }, [])
-
-  // function handleFunnelClick(nextPath) {
-  //   client.post('/event-funnel/details', { path: nextPath }).then((response) => {
-  //     console.log(`fetched event funnels for '${nextPath}'`)
-  //     const key = nextPath.join('|')
-  //     setFunnelPath(nextPath)
-  //     setFunnelEvents({ ...funnelEvents, [key]: response.data })
-  //   })
-  // }
-
-  // function handleUserDetail(userId) {
-  //   client.get(`user/${userId}/events`).then((response) => {
-  //     setUserEvents({ ...userEvents, [userId]: response.data })
-  //     setCurrUserId(userId)
-  //   })
-  //   client.get(`user/${userId}/event-properties`).then((response) => {
-  //     setUserProps({ ...userProps, [userId]: response.data })
-  //     setCurrUserId(userId)
-  //   })
-  // }
+  const minWidth = 1700
+  const isMobile = width <= minWidth
 
   return (
     <>
       <div className="App">
+        {isMobile && (
+          <Alert
+            type="warning"
+            message={`For maximum experience, please view the site on a desktop fullscreen browser (wider than ${minWidth})`}
+          />
+        )}
         <Row gutter={[10, 10]}>
           <Col flex="1">
             <FunnelExploration />

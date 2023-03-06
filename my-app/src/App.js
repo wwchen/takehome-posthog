@@ -25,7 +25,7 @@ function App() {
   const [eventProperties, setEventProperties] = useState({});
 
   const client = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: "https://wwchen-posthog-backend.herokuapp.com/",
     headers: {"Access-Control-Allow-Origin": "*"}
   });
   const PieChart = () => {
